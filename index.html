@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>True Guru — ผู้ช่วยเลือกแพ็คเกจให้ตรงใจลูกค้า</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1A1523;--paper:#F6F5F8;--surface:#FFFFFF;--border:#E7E5EC;--border-strong:#D6D3DE;
+    --muted:#6B6577;--muted-soft:#94909F;--accent:#E4002B;--accent-soft:#FFE3E8;--accent-ink:#B00021;
+    --magenta:#C4007A;--violet:#6D28D9;--good:#0E9F6E;--good-soft:#E2F6EE;
+    --amber:#B26B00;--amber-soft:#FFF1DC;--blue:#1D4ED8;--blue-soft:#E4ECFF;
+    --shadow:0 1px 2px rgba(26,21,35,.04),0 8px 24px rgba(26,21,35,.06);--r:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:"IBM Plex Sans Thai",system-ui,sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5}
+  .display{font-family:"Bai Jamjuree",sans-serif}
+
+  .topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:16px;padding:12px 22px;background:rgba(255,255,255,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+  .brand{display:flex;align-items:center;gap:11px}
+  .logo{width:34px;height:34px;border-radius:9px;flex:none;background:linear-gradient(135deg,var(--accent),var(--magenta));display:grid;place-items:center;color:#fff;font-weight:700;font-family:"Bai Jamjuree";font-size:18px;box-shadow:0 4px 12px rgba(228,0,43,.3)}
+  .brand h1{font-family:"Bai Jamjuree";font-size:17px;font-weight:700;margin:0;letter-spacing:-.2px}
+  .brand .tag{font-size:11.5px;color:var(--muted);font-weight:500;letter-spacing:.3px}
+  .proto-pill{font-size:10.5px;font-weight:700;letter-spacing:.6px;color:var(--amber);background:var(--amber-soft);padding:3px 9px;border-radius:999px;text-transform:uppercase}
+  .topbar .spacer{flex:1}
+  .session{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted);font-weight:500}
+  .session .dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 0 4px var(--good-soft)}
+  .btn-reset{font-family:inherit;font-size:13px;font-weight:600;color:var(--muted);background:transparent;border:1px solid var(--border-strong);padding:8px 14px;border-radius:9px;cursor:pointer;transition:.15s}
+  .btn-reset:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+
+  .wrap{display:grid;grid-template-columns:1fr 440px}
+  .intake{padding:24px 30px 80px;max-height:calc(100vh - 60px);overflow-y:auto}
+  .panel{position:sticky;top:60px;height:calc(100vh - 60px);border-left:1px solid var(--border);background:var(--surface);overflow-y:auto}
+
+  .setup{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:22px;box-shadow:var(--shadow)}
+  .step-lbl{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:11px;letter-spacing:.2px}
+  .step-dot{font-family:"IBM Plex Mono";font-size:11px;font-weight:600;color:#fff;background:var(--accent);width:20px;height:20px;border-radius:6px;display:grid;place-items:center}
+
+  .seg-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:8px}
+  .seg{display:flex;align-items:center;gap:10px;padding:12px 12px;border:1.5px solid var(--border);border-radius:11px;cursor:pointer;background:#fff;transition:.14s}
+  .seg:hover{border-color:var(--border-strong)}
+  .seg .se{font-size:19px;line-height:1;flex:none}
+  .seg .st{font-size:13px;font-weight:700;line-height:1.15}
+  .seg .st small{display:block;font-size:10px;color:var(--muted-soft);font-weight:500}
+  .seg.special{border-color:#F3B6C2}
+  .seg.on{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 4px 14px rgba(228,0,43,.12)}
+  .seg.custom{grid-column:1 / -1;justify-content:center;background:var(--paper)}
+  .seg.custom.on{background:var(--accent-soft)}
+  .seg-hint{font-size:11px;color:var(--muted-soft);margin-top:2px}
+
+  .seg-note{display:none;background:var(--accent-soft);border:1px solid #F3B6C2;border-radius:12px;padding:13px 15px;margin-bottom:22px;font-size:12.5px;line-height:1.5;color:var(--accent-ink)}
+  .seg-note b{color:var(--accent)}
+
+  .lead{max-width:640px;margin:0 0 22px}
+  .lead h2{font-family:"Bai Jamjuree";font-size:22px;margin:0 0 6px;letter-spacing:-.4px}
+  .lead p{margin:0;color:var(--muted);font-size:14px}
+
+  .section{margin-bottom:24px}
+  .section-head{display:flex;align-items:baseline;gap:10px;margin-bottom:13px}
+  .section-num{font-family:"IBM Plex Mono";font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);width:26px;height:26px;border-radius:8px;display:grid;place-items:center;flex:none}
+  .section-head h3{font-family:"Bai Jamjuree";font-size:15.5px;margin:0;font-weight:600}
+  .section-head .hint{font-size:12px;color:var(--muted-soft);margin-left:auto;font-weight:500}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+  .grid.tri{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+  .opt{display:flex;align-items:center;gap:11px;padding:12px 13px;border:1px solid var(--border);border-radius:11px;background:var(--surface);cursor:pointer;transition:.14s;user-select:none}
+  .opt:hover{border-color:var(--border-strong);transform:translateY(-1px);box-shadow:var(--shadow)}
+  .opt .tick{width:20px;height:20px;border-radius:6px;border:2px solid var(--border-strong);flex:none;display:grid;place-items:center;transition:.14s;background:#fff}
+  .opt .tick svg{width:12px;height:12px;opacity:0;transform:scale(.6);transition:.14s}
+  .opt .emoji{font-size:17px;line-height:1;filter:grayscale(.15)}
+  .opt .lbl{font-size:13.5px;font-weight:500;line-height:1.3}
+  .opt.on{border-color:var(--accent);background:var(--accent-soft)}
+  .opt.on .tick{background:var(--accent);border-color:var(--accent)}
+  .opt.on .tick svg{opacity:1;transform:scale(1)}
+  .opt.radio .tick{border-radius:50%}
+
+  .notes-wrap textarea{width:100%;min-height:76px;resize:vertical;font-family:inherit;font-size:13.5px;padding:13px 14px;border:1px solid var(--border);border-radius:11px;background:var(--surface);color:var(--ink);transition:.14s}
+  .notes-wrap textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .notes-wrap textarea::placeholder{color:var(--muted-soft)}
+  .quicknote{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+  .quicknote button{font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);background:var(--paper);border:1px solid var(--border);border-radius:999px;padding:5px 11px;cursor:pointer;transition:.13s}
+  .quicknote button:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+
+  .panel-inner{padding:20px 20px 44px}
+  .panel-empty{height:100%;min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px;color:var(--muted-soft)}
+  .panel-empty .big{font-size:40px;margin-bottom:14px}
+  .panel-empty h4{font-family:"Bai Jamjuree";font-size:16px;color:var(--muted);margin:0 0 6px}
+  .panel-empty p{font-size:13px;margin:0;max-width:230px}
+  .sec-h{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted-soft);font-weight:700;margin:0 0 11px;display:flex;align-items:center;gap:7px}
+
+  .cta-card{border:1.5px solid var(--accent);border-radius:16px;padding:24px 20px;text-align:center;background:linear-gradient(135deg,#fff,var(--accent-soft));margin-bottom:18px}
+  .cta-card .big2{font-size:38px;margin-bottom:10px}
+  .cta-card h4{font-family:"Bai Jamjuree";font-size:18px;margin:0 0 5px}
+  .cta-card p{font-size:12.5px;color:var(--muted);margin:0 0 16px;line-height:1.5}
+  .cta-card button{font-family:inherit;font-size:15px;font-weight:700;color:#fff;background:var(--accent);border:none;border-radius:12px;padding:14px 22px;cursor:pointer;width:100%;box-shadow:0 6px 18px rgba(228,0,43,.25)}
+  .cta-card button:hover{background:var(--accent-ink)}
+
+  /* segment reference in panel */
+  .seg-page{border:2px solid var(--accent);border-radius:14px;background:#fff;overflow:hidden}
+  .seg-page .ch{background:linear-gradient(120deg,var(--accent),var(--magenta));color:#fff;padding:12px 15px;font-family:"Bai Jamjuree";font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:8px}
+  .seg-page .cb{padding:14px 15px}
+  .cpack{display:flex;align-items:center;gap:12px;background:var(--accent-soft);border-radius:11px;padding:11px 13px;margin-bottom:9px}
+  .cpack:last-of-type{margin-bottom:2px}
+  .cpack .cp-price{font-family:"Bai Jamjuree";font-size:22px;font-weight:700;color:var(--accent);line-height:1;min-width:66px}
+  .cpack .cp-price small{display:block;font-size:10.5px;color:var(--muted);font-weight:500}
+  .cpack .cp-mid{flex:1;min-width:0}
+  .cpack .cp-name{font-size:13px;font-weight:700}
+  .cpack .cp-spec{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.35}
+  .cpack .cp-mkt{font-family:"IBM Plex Mono";font-size:10px;font-weight:600;color:var(--accent-ink);background:#fff;border:1px solid #F5B8C4;border-radius:6px;padding:3px 7px;white-space:nowrap}
+  .keyhl{background:#FFF6D5;border:1px solid #EBD48A;border-radius:10px;padding:11px 13px;margin:11px 0;font-size:12.5px;line-height:1.55;color:#6B5100;font-weight:600}
+  .keyhl .kl{font-size:9.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#B08900;display:block;margin-bottom:4px}
+  .clab{font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted-soft);margin:12px 0 7px;display:flex;gap:6px;align-items:center}
+  .hookbox{background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .hookbox .hh{font-size:9.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:4px}
+  .hookbox p{margin:0;font-size:12.5px;line-height:1.55}
+  .cscript{background:var(--accent-soft);border-radius:10px;padding:12px 13px;font-size:12.5px;line-height:1.55;color:var(--accent-ink)}
+  .docs{list-style:none;padding:0;margin:0}
+  .docs li{display:flex;gap:8px;font-size:12px;margin-bottom:6px;line-height:1.45;color:var(--muted)}
+  .why{list-style:none;padding:0;margin:0}
+  .why li{display:flex;gap:8px;font-size:12.5px;margin-bottom:7px;line-height:1.45}
+  .why .chk{color:var(--good);flex:none;margin-top:2px}
+  .script{background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:12px 13px;margin-bottom:8px}
+  .script .q{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--accent);margin-bottom:5px;display:block}
+  .script p{margin:0;font-size:12.5px;line-height:1.5}
+  .objcard{background:#fff;border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:8px;padding:9px 12px;margin-bottom:7px}
+  .objcard .oq{font-size:12px;font-weight:700;margin-bottom:3px}
+  .objcard .oa{font-size:12px;color:var(--muted);line-height:1.5}
+
+  /* MODAL wizard */
+  .modal-ov{position:fixed;inset:0;background:rgba(26,21,35,.5);backdrop-filter:blur(3px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+  .modal-ov.show{display:flex}
+  .modal-card{background:#fff;border-radius:16px;max-width:560px;width:100%;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.35);animation:pop .22s cubic-bezier(.2,.9,.3,1.2)}
+  @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+  .m-head{background:linear-gradient(120deg,var(--accent),var(--magenta));color:#fff;padding:13px 15px;display:flex;align-items:center;gap:10px;flex:none}
+  .m-head .back,.m-head .x{cursor:pointer;background:rgba(255,255,255,.2);width:30px;height:30px;border-radius:8px;display:grid;place-items:center;flex:none;font-size:18px}
+  .m-head .ht{font-family:"Bai Jamjuree";font-weight:700;font-size:14.5px;line-height:1.15;flex:1;min-width:0}
+  .m-head .ht small{display:block;font-size:11px;font-weight:500;opacity:.85;margin-top:1px}
+  .m-body{padding:15px 16px;overflow-y:auto;flex:1}
+  .m-foot{display:flex;gap:9px;padding:12px 15px;border-top:1px solid var(--border);flex:none;background:#fff}
+  .m-btn{flex:1;font-family:inherit;font-size:13.5px;font-weight:700;padding:13px;border-radius:11px;border:1.5px solid var(--border-strong);background:#fff;color:var(--muted);cursor:pointer}
+  .m-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .m-btn.primary{flex:1.5;background:var(--accent);border-color:var(--accent);color:#fff}
+  .m-btn.primary:hover{background:var(--accent-ink);color:#fff}
+  .m-btn.ghost{background:var(--ink);border-color:var(--ink);color:#fff}
+
+  .mlist-item{display:flex;align-items:center;gap:12px;padding:13px;border:1.5px solid var(--border);border-radius:12px;margin-bottom:9px;cursor:pointer;transition:.13s}
+  .mlist-item:first-child{border-color:var(--accent);background:var(--accent-soft)}
+  .mlist-item:hover{border-color:var(--accent)}
+  .mlist-item .rk{font-family:"Bai Jamjuree";font-size:14px;font-weight:700;color:var(--accent);min-width:26px}
+  .mlist-item .mm{flex:1;min-width:0}
+  .mlist-item .nm{font-size:13.5px;font-weight:700;line-height:1.2}
+  .mlist-item .sp{font-size:11px;color:var(--muted);margin-top:2px}
+  .mlist-item .sp .cd{font-family:"IBM Plex Mono";color:var(--accent-ink)}
+  .mlist-item .pct{font-family:"Bai Jamjuree";font-weight:700;font-size:14px;color:var(--muted)}
+  .mlist-item .cv{color:var(--muted-soft);font-size:20px}
+  .mlist-top{font-size:12px;color:var(--muted);margin-bottom:12px}
+
+  .m-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+  .m-tab{font-family:inherit;font-size:12px;font-weight:600;padding:8px 12px;border-radius:9px;border:1px solid var(--border);background:#fff;color:var(--muted);cursor:pointer}
+  .m-tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .dprice{display:flex;align-items:baseline;gap:8px;margin-bottom:10px}
+  .dprice .b{font-family:"Bai Jamjuree";font-size:26px;font-weight:700;color:var(--accent)}
+  .dprice .u{font-size:12px;color:var(--muted)}
+  .dprice .cd{margin-left:auto;font-family:"IBM Plex Mono";font-size:11px;font-weight:600;color:var(--accent-ink);background:var(--accent-soft);padding:3px 8px;border-radius:6px}
+
+  .xrow{display:flex;align-items:center;gap:11px;padding:11px 12px;border:1px solid var(--border);border-radius:11px;margin-bottom:8px;cursor:pointer;transition:.13s}
+  .xrow.on{border-color:var(--good);background:var(--good-soft)}
+  .xrow.sugg{border-color:var(--accent)}
+  .xtick{width:19px;height:19px;border-radius:6px;border:2px solid var(--border-strong);flex:none;display:grid;place-items:center;background:#fff}
+  .xtick svg{width:11px;height:11px;opacity:0}.xrow.on .xtick{background:var(--good);border-color:var(--good)}.xrow.on .xtick svg{opacity:1}
+  .xrow .xi{flex:1;min-width:0}
+  .xrow .xn{font-size:13px;font-weight:600;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .xrow .xs2{font-size:11px;color:var(--muted);margin-top:2px}
+  .xrow .xp{font-family:"Bai Jamjuree";font-size:13px;font-weight:700;white-space:nowrap}
+  .tag-ai{font-size:9px;font-weight:700;background:var(--accent);color:#fff;padding:1.5px 6px;border-radius:999px;text-transform:uppercase}
+  .tag-truex{font-size:9px;font-weight:700;background:linear-gradient(135deg,var(--violet),var(--magenta));color:#fff;padding:1.5px 6px;border-radius:999px}
+  .base-line{display:flex;align-items:center;gap:10px;background:var(--paper);border-radius:11px;padding:11px 13px;margin-bottom:12px}
+  .base-line .bn{flex:1;font-size:13px;font-weight:700}
+  .base-line .bn small{display:block;font-size:11px;color:var(--muted);font-weight:500}
+  .base-line .bp{font-family:"Bai Jamjuree";font-size:16px;font-weight:700}
+  .run-total{position:sticky;bottom:0;background:var(--ink);color:#fff;border-radius:11px;padding:12px 14px;display:flex;align-items:center;margin-top:6px}
+  .run-total .l{flex:1;font-size:11.5px;color:rgba(255,255,255,.75)}
+  .run-total .v{font-family:"Bai Jamjuree";font-size:22px;font-weight:700}
+  .run-total .v small{font-size:12px;color:rgba(255,255,255,.7)}
+
+  .sum-total{background:linear-gradient(120deg,var(--accent),var(--magenta));color:#fff;border-radius:14px;padding:16px;display:flex;align-items:center;margin-bottom:14px}
+  .sum-total .l{flex:1;font-size:12px;color:rgba(255,255,255,.85);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+  .sum-total .l small{display:block;font-size:11px;text-transform:none;letter-spacing:0;opacity:.85;margin-top:3px;font-weight:400}
+  .sum-total .v{font-family:"Bai Jamjuree";font-size:30px;font-weight:700}
+  .sum-sec{font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted-soft);margin:14px 0 8px}
+  .sum-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
+  .sum-row .sn{flex:1}
+  .sum-row .cd{font-family:"IBM Plex Mono";font-size:10.5px;color:var(--accent-ink);background:var(--accent-soft);padding:2px 7px;border-radius:5px;margin-left:6px}
+  .sum-row .sp{font-family:"Bai Jamjuree";font-weight:700;white-space:nowrap}
+  .get li{font-size:12.5px;margin-bottom:6px;line-height:1.45}
+  .whybox{background:var(--good-soft);border:1px solid #B8E6D2;border-radius:11px;padding:12px 13px;margin-top:14px;font-size:12.5px;line-height:1.5}
+  .whybox b{color:#0B7A54}
+  .compare{display:flex;gap:10px;margin-top:12px}
+  .compare .cbox{flex:1;border:1px solid var(--border);border-radius:11px;padding:11px;text-align:center}
+  .compare .cbox .cl{font-size:10.5px;color:var(--muted-soft);text-transform:uppercase;letter-spacing:.3px;font-weight:700}
+  .compare .cbox .cv{font-family:"Bai Jamjuree";font-size:19px;font-weight:700;margin-top:3px}
+  .compare .cbox.now{border-color:var(--accent);background:var(--accent-soft)}
+  .compare .cbox.now .cv{color:var(--accent)}
+
+  .modal-card::-webkit-scrollbar,.m-body::-webkit-scrollbar,.intake::-webkit-scrollbar,.panel::-webkit-scrollbar{width:9px}
+  .m-body::-webkit-scrollbar-thumb,.intake::-webkit-scrollbar-thumb,.panel::-webkit-scrollbar-thumb{background:#DAD7E0;border-radius:9px;border:2px solid #fff}
+  .disclaimer{font-size:11px;color:var(--muted-soft);margin-top:24px;line-height:1.5;padding-top:16px;border-top:1px solid var(--border)}
+
+  @media(max-width:960px){
+    .wrap{grid-template-columns:1fr}
+    .panel{position:static;height:auto;border-left:none;border-top:1px solid var(--border)}
+    .intake{max-height:none;overflow:visible}
+    .seg-row{flex-wrap:wrap}
+  }
+
+  /* login + watermark */
+  .login-ov{position:fixed;inset:0;z-index:200;background:linear-gradient(135deg,#2A2233,#3A1230);display:flex;align-items:center;justify-content:center;padding:24px}
+  .login-card{background:#fff;border-radius:20px;padding:34px 30px;width:100%;max-width:392px;box-shadow:0 24px 70px rgba(0,0,0,.4);text-align:center}
+  .login-logo{width:52px;height:52px;border-radius:14px;margin:0 auto 14px;background:linear-gradient(135deg,var(--accent),var(--magenta));display:grid;place-items:center;color:#fff;font-weight:700;font-family:"Bai Jamjuree";font-size:26px;box-shadow:0 6px 16px rgba(228,0,43,.3)}
+  .login-card h1{font-family:"Bai Jamjuree";font-size:24px;margin:0 0 4px}
+  .login-card .lp{font-size:13px;color:var(--muted);margin:0 0 22px}
+  .login-field{text-align:left;margin-bottom:13px}
+  .login-field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px}
+  .login-field input{width:100%;font-family:inherit;font-size:15px;padding:13px 14px;border:1.5px solid var(--border-strong);border-radius:11px;background:var(--paper)}
+  .login-field input:focus{outline:none;border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px var(--accent-soft)}
+  .login-err{display:none;font-size:12.5px;color:var(--accent);background:var(--accent-soft);border-radius:9px;padding:9px 11px;margin-bottom:12px;text-align:left;font-weight:500}
+  .login-btn{width:100%;font-family:inherit;font-size:15px;font-weight:700;color:#fff;background:var(--accent);border:none;border-radius:12px;padding:14px;cursor:pointer;box-shadow:0 6px 18px rgba(228,0,43,.28)}
+  .login-btn:hover{background:var(--accent-ink)}
+  .login-note{font-size:11px;color:var(--muted-soft);margin-top:16px;line-height:1.5}
+  .wm{position:fixed;inset:0;z-index:150;pointer-events:none;display:none;flex-wrap:wrap;gap:34px 58px;overflow:hidden;transform:rotate(-24deg) scale(1.5);transform-origin:center;padding:40px}
+  .wm span{font-size:12px;color:rgba(120,110,130,.11);white-space:nowrap;font-weight:600;letter-spacing:.5px}
+  .btn-logout{font-family:inherit;font-size:12.5px;font-weight:600;color:var(--muted);background:transparent;border:1px solid var(--border-strong);padding:7px 12px;border-radius:9px;cursor:pointer;margin-right:8px}
+  .btn-logout:hover{color:var(--accent);border-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="wm" id="wm"></div>
+<div class="login-ov" id="login-ov">
+  <div class="login-card">
+    <div class="login-logo">T</div>
+    <h1 class="display">True Guru</h1>
+    <p class="lp">ผู้ช่วยเลือกแพ็คเกจให้ตรงใจลูกค้า</p>
+    <div class="login-field"><label>รหัสพนักงาน (Sale Code)</label><input id="lg-user" placeholder="" autocomplete="off" inputmode="numeric"></div>
+    <div class="login-field"><label>รหัสผ่าน</label><input id="lg-pass" type="password" placeholder="••••••••••"></div>
+    <div class="login-err" id="lg-err"></div>
+    <button class="login-btn" onclick="doLogin()">เข้าสู่ระบบ</button>
+  </div>
+</div>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="logo">T</div>
+    <div>
+      <h1>True Guru <span class="proto-pill">ต้นแบบ</span></h1>
+      <div class="tag">ผู้ช่วยเลือกแพ็คเกจให้ตรงใจลูกค้า</div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="session"><span class="dot"></span> <span id="sess-name">—</span></div>
+  <button class="btn-logout" onclick="logout()">ออกจากระบบ</button>
+  <button class="btn-reset" onclick="resetAll()">ล้างข้อมูล</button>
+</div>
+
+<div class="wrap">
+  <!-- LEFT -->
+  <div class="intake">
+    <div class="setup">
+      <div class="step-lbl"><span class="step-dot">1</span> ลูกค้าตรงกลุ่มไหน? (มีโปรเฉพาะ → กดแล้วเด้งโปรทันที)</div>
+      <div class="seg-row" id="seg-row">
+        <div class="seg special" data-seg="nt"><span class="se">🔴</span><span class="st">ย้ายจาก NT<small>NT Replacement 520</small></span></div>
+        <div class="seg special" data-seg="switch"><span class="se">🔁</span><span class="st">ย้ายค่ายอื่น<small>AIS / 3BB / อื่นๆ</small></span></div>
+        <div class="seg special" data-seg="flood"><span class="se">🌊</span><span class="st">พื้นที่เสี่ยงภัย<small>อุทกภัย / ไฟไหม้</small></span></div>
+        <div class="seg special" data-seg="security"><span class="se">🛡️</span><span class="st">เน้นกล้อง / IoT<small>Security / ผู้สูงอายุ</small></span></div>
+        <div class="seg custom" data-seg="custom"><span class="se">🧩</span><span class="st">จัดแพ็กให้ตรงใจ (เลือกตามไลฟ์สไตล์)</span></div>
+      </div>
+      <div class="seg-hint">เลือกกลุ่มพิเศษ = เด้งหน้าโปรทันที · เลือก “จัดแพ็ก” = ติ๊กความต้องการแล้วดูโปรที่แนะนำ</div>
+    </div>
+
+    <div class="seg-note" id="seg-note"></div>
+
+    <div id="custom-intake">
+      <div class="lead">
+        <h2 class="display">ความต้องการลูกค้า</h2>
+        <p>ติ๊กตามที่ลูกค้าบอก แล้วกด “ดูโปรที่แนะนำ” ทางขวา ระบบจะเรียงโปรที่ตรงที่สุดให้</p>
+      </div>
+      <div class="section">
+        <div class="section-head"><div class="section-num">01</div><h3 class="display">ความต้องการ &amp; ไลฟ์สไตล์</h3><span class="hint">เลือกได้หลายข้อ</span></div>
+        <div class="grid" id="sec-need"></div>
+      </div>
+      <div class="section">
+        <div class="section-head"><div class="section-num">02</div><h3 class="display">จำนวนผู้ใช้งาน</h3></div>
+        <div class="grid" id="sec-users"></div>
+      </div>
+      <div class="section">
+        <div class="section-head"><div class="section-num">03</div><h3 class="display">งบที่ลูกค้ารับได้</h3><span class="hint">waterfall</span></div>
+        <div class="grid tri" id="sec-budget"></div>
+      </div>
+      <div class="section">
+        <div class="section-head"><div class="section-num">04</div><h3 class="display">ข้อมูลบ้าน (สังเกตด้วยตา)</h3></div>
+        <div class="grid" id="sec-home"></div>
+      </div>
+      <div class="section">
+        <div class="section-head"><div class="section-num">05</div><h3 class="display">หมายเหตุอื่น ๆ</h3><span class="hint">นอกเหนือช่องติ๊ก</span></div>
+        <div class="notes-wrap">
+          <textarea id="notes" placeholder="เช่น เลี้ยงหมา 2 ตัว · ห่วงพ่อแม่สูงอายุ · งบยืดได้ถ้าของครบ ..."></textarea>
+          <div class="quicknote" id="quicknote"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      ⚠️ <b>ต้นแบบ (mockup)</b> — ราคา/ความเร็ว/MKT Code อ้างอิงดีลย์ True Online Jun 2026 (โปรอาจเปลี่ยน) ก่อนใช้จริงต้องตรวจสอบ MKT Code + เงื่อนไขกับระบบ True ทุกครั้ง
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="panel">
+    <div id="empty" class="panel-empty">
+      <div class="big">🎯</div>
+      <h4 class="display">รอข้อมูลจากลูกค้า</h4>
+      <p>เลือกกลุ่มลูกค้า (Step 1) เพื่อเด้งโปร หรือเลือก “จัดแพ็ก” แล้วติ๊กความต้องการ</p>
+    </div>
+    <div id="result" class="panel-inner" style="display:none"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-ov" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-card" id="modal-card"></div>
+</div>
+
+<script>
+/* ============ LOGIN (ต้นแบบ — จริงต้องตรวจฝั่งเซิร์ฟเวอร์) ============ */
+const STAFF={"39073283":"นายศรัญยู บุญมี|Senior CMSales|BMA-West","39074922":"น.ส.ศศิกาญจน์ พันทะลาด|CMSales|BMA-West","39089420":"น.ส.พรทิวา พยานกลาง|CMSales|BMA-West","39130904":"นางสาวภูษณิศา อักษรสมบัติ|CMSales|BMA-West","39061693":"นางสาวมุกดารัสมิ์ ศรีเมืองวัชรี|CMSales|BMA-West","39073803":"นายแมน โพธิ์บาง|Senior CMS C|BMA-West","39121417":"น.ส.ธิดารัตน์ ศรีสำเนียม|CMSales|BMA-West","39128610":"นายณัฐวุฒิ ถุงเงิน|CMSales|BMA-West","12707091":"น.ส.วลี แซ่โง้ว|CMSales|BMA-West","39103167":"น.ส.สรินทิพย์ โหมดว่องไว|Senior CMSales|BMA-West","39130193":"นายชัยรัตน์ เลิศนิติวัฒนา|CMSales|BMA-West","39131146":"นายทรัพย์ธนดนย์ ขันทอง|CMSales|BMA-West","39069062":"น.ส.เบญจวรรณ สีชนะ|CMSales|BMA-West","39091569":"นายอภิชาติ ศิวะศรัณย์|CMSales|BMA-West","39092205":"น.ส.สาลินี กิตติสืบวงค์|Senior CMSales|BMA-West","39127020":"นายกิตติ สอนแก้ว|CMSales|BMA-West","39056228":"นางมะลิวรรณ มาตรมูลตรี|CMSales|BMA-West","39056257":"น.ส.กุสุมา บุญเนตร์|CMSales|BMA-West","39131814":"นางสาวเบญจมาศ วุฒิปัญญา|CMSales|BMA-West","39056320":"น.ส.สุดารัตน์ รินแยง|CMSales|BMA-West","39058858":"นายจารุเดช จิตนิยม|Senior CMSales|BMA-West","39092709":"น.ส.อนุธิดา เฉยฉิว|CMSales|BMA-West","39127490":"นางสาวชนิกานต์ เหล่าแสงไทย|CMSales|BMA-West","39066765":"นางอุรชา แสงอุทัย|CMSales|BMA-West","39097164":"น.ส.อำภา หม้อกอง|Senior CMSales|BMA-West","39130985":"นางสาวศุภนิดา ศรีจันบุญ|CMSales|BMA-West","39055925":"น.ส.ศิริรักษ์ สิงห์คำโล|Senior CMSales|BMA-West","39055926":"น.ส.ปวีณา แจ่มใจ|CMSales|BMA-West","39056577":"น.ส.นารีรัตน์ นุ้ยจุ้ย|CMSales|BMA-West","39105524":"นายเอกพล อ่ำดำ|CMSales|BMA-West","39056073":"นายบัณฑิต บุญถนอม|Senior CMSales|BMA-West","39062128":"นางสาวสร้างขวัญ ศรีทวี|CMSales|BMA-West","39077859":"นายธนพล เหงี่ยมสง่า|CMSales|BMA-West","39133513":"นายณัฐวัฒน์ วรรณธนากร|CMSales|BMA-West","39055928":"น.ส.มณีนุช ทรัพย์สิน|Senior CMSales|BMA-West","39065218":"นายพรเทพ กิ่งแก้วกมล|CMSales|BMA-West","39079583":"น.ส.นาวี ดีสเทล|CMSales|BMA-West","39086044":"น.ส.ปฐมาภรณ์ สุมงคล|CMSales|BMA-West","39128744":"นายถนัดกิจ คลองโนนสูง|CMSales|BMA-West","39083721":"นายการันต์ ทัพพิโรจน์|Senior CMSales|BMA-West","39091863":"นายอดิชาติ มรกฏจินดา|CMSales|BMA-West","39104534":"นายธนกร แสงปุย|CMSales|BMA-West","39047595":"นายวิศรุต เปลี่ยนรุ่งสว่าง|Senior CMS C|BMA-East","39055725":"นายพิทักษ์ มลาวัน|CMSales|BMA-East","39091419":"นายวิสนุ บุญมา|CMSales|BMA-East","39117217":"นายฤทธิชัย แซ่ตั้ง|CMSales|BMA-East","39056253":"นายศิริพล จุฑาศิโรรัตน์|Senior CMSales|BMA-East","39081155":"นายวีรยุทธ เล็กกระจ่าง|CMSales|BMA-East","39116525":"นายคีรีพงษ์ ยอดสิงห์|CMSales|BMA-East","39128612":"นางสาววรรณิศา พันพานิช|CMSales|BMA-East","39056256":"นายเกียรติศักดิ์ ทองสัมฤทธิ์|Senior CMSales|BMA-East","39056262":"น.ส.อรทัย ทัศนกุลพันธุ์|CMSales|BMA-East","39060599":"นายฐิติพันธ์ แก้วแสน|CMSales|BMA-East","39102366":"น.ส.นารีรัตน์ วรรณสิงห์|CMSales|BMA-East","39047920":"นายสุชีพ มะเดื่อ|Senior CMS C|BMA-East","39073449":"น.ส.ซารีณี แนฆามา|CMSales|BMA-East","39073492":"น.ส.ยาลีตา หะยียูโซะ|CMSales|BMA-East","39092715":"น.ส.รุ่งฟ้า ทองเหลี่ยว|CMSales|BMA-East","39094510":"นายธงชัย แสงธรรมนาถ|CMSales|BMA-East","39130906":"นางสาวปาลิตา พิบูลรัตน์|CMSales|BMA-East","39055937":"น.ส.ชญานภัส โจทจันทร|CMSales|BMA-East","39056215":"นางสาว ภัสรานันท์ ศิรภพธนพันธ์|Senior CMSales|BMA-East","39089129":"น.ส.กนกนาถ รุ่งถกลสุขเวช|CMSales|BMA-East","39104952":"น.ส.ปรียานุช เฉลิมรัตน์|CMSales|BMA-East","39071411":"นายสุพจน์ ข่าขันมะลี|CMSales|BMA-East","39082910":"นายเอกณรงค์ แท่งหิน|CMSales|BMA-East","39087722":"น.ส.ณัฐกฤตา ทองพิทักษ์|Senior CMSales|BMA-East","39094148":"น.ส.ศศิพร เสร็จธุระ|CMSales|BMA-East","39124512":"นางสาวดวงกมล ปั้นลำพอง|CMSales|BMA-East","39055858":"นายบัญญัติ อมรสิน|Senior CMS C|BMA-East","39055934":"นางนงนาฎ ซาซง|CMSales|BMA-East","39096270":"น.ส.กุลนันท์ แทนโชติ|CMSales|BMA-East","39097247":"นายสหรัฐ ภาณะรมย์|CMSales|BMA-East","39128605":"นายจำเริญ โตอนันต์|CMSales|BMA-East","39134155":"นายสุรกานต์ ประเสริฐศักดิ์|CMSales|BMA-East","39056612":"น.ส.วิรยา รัตนบุรี|CMSales|BMA-East","39083013":"นายวัชรชัย คงอ่อน|Senior CMSales|BMA-East","39093078":"นางขณิษฐา บุญประเสริฐ|CMSales|BMA-East","39100484":"น.ส.สุภาพร พุ่มสวัสดิ์|CMSales|BMA-East","39128667":"นายธนาธิป ธัมมาหมั่น|CMSales|BMA-East","39130015":"นายแสวง สาธร|CMSales|BMA-East","39023188":"นายทวีป อินธรรม|Senior CMSales|BMA-East","39055728":"น.ส.ญาณิกา ประดับสินธุ์|CMSales|BMA-East","39056232":"นายอนันต์ชัย ดาราพาณิชย์|CMSales|BMA-East","39061564":"นายจักรพันธ์ สุรีย์ส่อง|CMSales|BMA-East","39108535":"นายธนาพร โกมาศ|CMSales|BMA-East","39055933":"นายกิตติ์ธเนศ พันธ์วิบูลย์|Senior CMSales|BMA-East","39105749":"น.ส.อรพรรณ จันตะปะตุ|CMSales|BMA-East","39055943":"น.ส.ทาริกา รัตนา|Senior CMSales|BMA-East","39056152":"นายสหรัฐ ศรีเครือ|CMSales|BMA-East","39056466":"นายดนุพัฒน์ แถมกระโทก|CMSales|BMA-East","39056084":"นางสาวณัฏฐิชาภา เจียสิริมงคล|CMSales|BMA-East","39056217":"น.ส.อิงครัศม์ วานิชวุฒิวัฒน์|Senior CMSales|BMA-East","39071454":"น.ส.กุหลาบ วงษา|CMSales|BMA-East","39130894":"นางสาวศุภัชฌา พินัยวัติ|CMSales|BMA-East","39089869":"น.ส.ณัฐดารัณ ไพโรจน์วรชิต|CMSales|BMA-East","39097908":"น.ส.พรทิวา คิดดีจริง|CMSales|BMA-East","39103484":"น.ส.พัทธนันท์ ลือพัฒนวีรกุล|Senior CMSales|BMA-East","39037909":"นายวันเฉลิม ชัยชนะ|Senior CMS C|BMA-East","39056157":"น.ส.นิภาภรณ์ สีหะนันท์|CMSales|BMA-East","39056470":"น.ส.สิตาภัค บูรพา|CMSales|BMA-East","39114851":"นางสาวอรอนงค์ ชัยชนะ|CMSales|BMA-East","39040228":"น.ส.ณิชกานต์ ม้วนพรม|Senior CMSales|BMA-East","39056156":"นายยุทธพงษ์ ทัดมาลา|CMSales|BMA-East","39056338":"น.ส.เพชรรัตน์ บุญชวลิต|CMSales|BMA-East","39058855":"น.ส.กิรณา แก้วเขียว|CMSales|BMA-East","39063791":"นายพงษ์ศกร ฉันทะ|CMSales|BMA-East","39123691":"นางสาวสตรีรัตน์ คำจีน|CMSales|BMA-East","39055729":"น.ส.ศราภรณ์ เขมกานนท์|CMSales|BMA-East","39056158":"นายพุฒิวัตน์ ประเสริฐสังข์|Senior CMSales|BMA-East","39060835":"นางสาวชัชฎา ชาวชายโขง|CMSales|BMA-East","39056207":"น.ส.นิสารัตน์ รอดไทรป่า|CMSales|BMA-East","39056305":"น.ส.นุชตสา กิตติธนากร|Senior CMSales|BMA-East","39056529":"น.ส.ชนิตา มงคลพันธ์|CMSales|BMA-East","39128280":"นางสาวจุฑามาศ วรรณชูพริ้ง|CMSales|BMA-East","39129445":"นางสาวมาริสา พูนเกษม|CMSales|BMA-East","39079630":"นายชินวัฒน์ อมรินทร์|CMSales|BMA-East","39086032":"น.ส.ปุณณภา เมธิส|CMSales|BMA-East","39093654":"นายอรรถสิทธิ์ รุ่งรพีพรพงษ์|Senior CMSales|BMA-East","39115855":"นายปิโยรส สันตยานนท์|CMSales|BMA-East","39055731":"น.ส.สุธิมา สีพลมาตย์|CMSales|BMA-East","39056001":"น.ส.พัชรินทร์ แข็งแรง|Senior CMSales|BMA-East","39056159":"น.ส.มณีนุช วงศ์ทวีทอง|CMSales|BMA-East","39056300":"นายอริย์ธัช สวัสดี|CMSales|BMA-East","39056083":"น.ส.กัลนิกา ตากุล|Senior CMSales|BMA-East","39056469":"น.ส.เบญจวรรณ์ มั่นกิจ|CMSales|BMA-East","39059520":"นายอรรถพร พรมสวัสดิ์|CMSales|BMA-East","39128680":"นางสาวณัฐกานต์ ผมน้อย|CMSales|BMA-East","39056154":"น.ส.ทิพย์ธิดา คำพันธ์จันทร์|Senior CMSales|BMA-East","39056303":"นายปรีชา รัดรอดกิจ|CMSales|BMA-East","39102014":"นายธีรภัทร แก้วแฟง|CMSales|BMA-East","39073855":"นายจตุรนต์ เหลืองภูมิพิทยา|CMSales|BMA-East","39092150":"นายอนิวัตติ์ อินทร์สุวรรณ|Senior CMSales|BMA-East","39109795":"น.ส.สุภาพร มหานิล|CMSales|BMA-East","39117540":"นายจิระศักดิ์ ชาวละหาร|CMSales|BMA-East","39117541":"นางสาวทิพาพร สุดแสวง|CMSales|BMA-East","39069086":"น.ส.ณัฐยา ชุ่มชื่น|Senior CMSales|BMA-East","39097058":"นายสักกะกฤดิ วงศ์งาม|CMSales|BMA-East","39130349":"นางสาวสุจิตรา ทวีวรรณ|CMSales|BMA-East","39130897":"นางสาวประสิตา มณีวงษ์|CMSales|BMA-East","39073747":"น.ส.เขมิกา จิตร์อำไพ|CMSales C|East","39087408":"นายสุทธิพงษ์ อุดรศรี|CMSales|East","39091357":"นายดุษดี พิทักษ์ทรัพย์|Senior CMSales|East","39092537":"น.ส.ธิติมา ใยอ่อน|CMSales|East","39098031":"น.ส.ปรีญาพัชญ์ อธิพัฒน์จรูญ|CMSales|East","39122368":"น.ส.วิวาห์พร ยิ่งเจริญ|CMSales|East","39064274":"น.ส.พรรณิภา กิ่งนิโครธ|CMSales|East","39077659":"น.ส.รวิษฎา ภูมิภักดิ์|Senior CMSales|East","39099688":"นายณัฐพงษ์ สมร|CMSales|East","39086139":"น.ส.มนพัทธ์ ปัสนานนท์|Senior CMSales|East","39128278":"นายณัฐนันท์ ขันธ์ละ|CMSales|East","39130901":"นางสาวพัชรพร ธนประจำเรือ|CMSales|East","39133514":"นายนรัตนศัย ฉาบฉวย|CMSales|East","39055802":"นายวุฒินันท์ เหลืองถาวร|CMSales|East","39056099":"น.ส.อรอนงค์ พันตู้|Senior CMSales|East","39056014":"น.ส.บัณฑิตา ชมศรี|CMSales|East","39088766":"น.ส.ปิยธิดา มียะแสน|Senior CMSales|East","39121422":"นางสาวดาราพร แสงสกุล|CMSales|East","39008158":"น.ส.วลัยลักษณ์ โตลอย|CMSales|East","39055666":"นายทรงพล แสงเมฆ|Senior CMSales|East","39065386":"นายนันทพงศ์ สรฤทธิ์|CMSales|East","39106101":"นายณัฐพงษ์ ธงชัย|CMSales|East","39122383":"นายภาคภูมิ ทังไธสง|CMSales|East","39055800":"นายการันด์ สุดสวาท|CMSales|East","39056013":"นายอุกฤษฏ์ อ้วนอ่อน|Senior CMSales|East","39056307":"น.ส.ปาวีณา มณีลาภ|CMSales|East","39115580":"นายอานนท์ บุญเนตร|CMSales|East","39056089":"น.ส.วรรณิศา กำลังหาญ|Senior CMSales|East","39056091":"นายสมบูรณ์ บาบุญ|CMSales|East","39056166":"น.ส.ธิติรส พรมโสภา|CMSales|East","39056304":"น.ส.อัจฉราพร แก้วนอก|CMSales|East","39056477":"น.ส.จันสุภารัตน์ โพธิ์คำ|CMSales|East","39056009":"นายจัตุรงค์ นามกัลยา|CMSales|East","39056343":"น.ส.สายสมร ดีดวงพันธ์|Senior CMSales|East","39109250":"น.ส.กนกวรรณ เทศไธสง|CMSales|East","39128614":"นางสาวอนงนาฎ วงษาวัตร|CMSales|East","39056474":"นายสุทธิ มาลามาศ|Senior CMSales|East","39092831":"น.ส.สินีนาฏ น่วมมี|CMSales|East","39104417":"นายณัฐวุธ งามประยูร|CMSales|East","39108130":"น.ส.ยุภาพร เสนศรี|CMSales|East","39056306":"น.ส.ธิดานันท์ ลิขิตกุล|CMSales|East","39056524":"น.ส.จิราภรณ์ ยามดี|CMSales|East","39062546":"นายราฆพ บุญสำราญ|CMSales|East","39077521":"น.ส.สมหญิง ดาบด้วน|Senior CMSales|East","39130194":"นางสาวนิภาพรรณ เดี่ยวชัยภูมิ|CMSales|East","39091131":"นายอานนท์ แสงมณี|Senior CMSales|East","39091184":"นายธนวัฒน์ อำนวย|CMSales|East","39091212":"นายณัฐวุฒิ ผุยคำสิงห์|CMSales|East","39091218":"น.ส.นิตยา คามทิตย์|CMSales|East","39092195":"น.ส.เอกนภา ชัยลิขิตธรรม|CMSales|East","39103824":"นายมนัส ไชยคราม|CMSales|East","39055866":"น.ส.นฤมล ศิริเมร์|Senior CMSales|East","39125627":"นายกรเอก วะสุขันธ์|CMSales|East","39128990":"นางสาววันวิสา บุญประเสริฐ|CMSales|East","39061456":"นายธนาธิป สุขีเกตุ|CMSales|East","39088017":"นายทวีวัฒน์ นันทสินธ์|Senior CMSales|East","39129407":"นายณัฐพงษ์ มังสังคำ|CMSales|East","39133510":"นายสิรภพ บุญให้|CMSales|East","39133511":"นางสาวพันทิพา นพพันธ์|CMSales|East","39056297":"น.ส.กนกวรรณ บุญธรรม|CMSales|North","39078985":"น.ส.ฐิติชญาณ์ นาซ้าย|Senior CMSales|North","39115134":"น.ส.พรธิดา โนกัน|CMSales|North","39128001":"นางสาวนฤมล ปานนอก|CMSales|North","39130026":"นางสาวจิรัชยา พาจรทิศ|CMSales|North","39055907":"น.ส.จามจุรี แก้วคำแดง|CMSales|North","39087784":"น.ส.ศิริรัตน์ กิติมูล|Senior CMSales|North","39115085":"น.ส.อรวรรณ พันแสง|CMSales|North","39116566":"นายณัฐพล กาวีอิ่น|CMSales|North","39133522":"นางสาวนภัสสร หอมน้อย|CMSales|North","39063356":"นายวทัญญู สิงห์แก้ว|CMSales|North","39063558":"น.ส.ธมลวรรณ ทาแกง|Senior CMSales|North","39130002":"นางสาวอังคณา ศิริกันท์|CMSales|North","39131145":"นางสาวพิมพา เสือบางพระ|CMSales|North","39133524":"นายจิรกิตติ์ คิดดี|CMSales|North","12708132":"น.ส.ปาริฉัตร คาบแก้ว|CMSales|North","39055694":"นายวัฒนา พิมพ์ทอง|CMSales|North","39074586":"น.ส.รจเรข พลับอินทร์|Senior CMSales|North","39126571":"นายวีรภัทร ฝั้นคำสาย|CMSales|North","39128266":"นางสาวกัญชพร บุญต่อม|Senior CMSales|North","39129999":"นายชรินธร สุวงค์เครือ|CMSales|North","39130350":"นางสาวจิระนันท์ ไพโรจน์|CMSales|North","39130905":"นางสาวพรมรินทร์ บุญช่วย|CMSales|North","39055840":"น.ส.นุชชนา ถาน้อย|CMSales|North","39056066":"นายธนภัทร รินแก้วงาม|Senior CMSales|North","39056606":"นายกิตติศักดิ์ วิโรจน์ตระกูล|CMSales|North","39089462":"น.ส.อริสรา ไชยอุด|CMSales|North","39092842":"น.ส.ธัญชนก จารณะ|CMSales|North","39056047":"น.ส.สุรีย์ ทองแท้|Senior CMSales|North","39064610":"นายนพรัตน์ เครือคำ|CMSales|North","39120342":"นางสาวสุนิษา ศิริพันธ์|CMSales|North","39133523":"นางสาวสุลิษา ปิ่นทอง|CMSales|North","39134156":"นางสาวลภัสรินทร์ โชติวรเมธากุล|CMSales|North","39055756":"น.ส.นิรมล ชอบธรรม|Senior CMSales|North","39117704":"นายเอกชัย อุปะทะ|CMSales|North","39127019":"นายพีรพัฒน์ อินอ่อน|CMSales|North","39130982":"นางสาววัชราพร อำนา|CMSales|North","39130986":"นางสาวอริสา ทับกลัด|CMSales|North","39056137":"นายอนุชิต มิ้มทอง|Senior CMSales|North","39056514":"น.ส.ชลธิชา จิตปลื้ม|CMSales|North","39065692":"น.ส.พรรณนิกา สุมลฑา|CMSales|North","39123690":"นายอุดมพร บัวทุม|CMSales|North","39122371":"นายปารเมศ รักษางาม|Senior CMSales|North","39127287":"น.ส.สมพร นาคมี|CMSales|North","39128000":"นางสาวเวธินี แก้วหลิด|CMSales|North","39131781":"นายกฤษณะชัย เจริญลักษณ์|CMSales|North","39133515":"นายกฤษณะ พุฒบาง|CMSales|North","39055899":"นายธนัญกรณ์ ทะแพ่ง|Senior CMSales|North","39056036":"น.ส.ไพลิน คำสุวรรณ|CMSales|North","39103957":"นายญาณาธิป จันทร์เพ็ญ|CMSales|North","39055792":"นายกฤติกรณ์ ศรีแก่น|CMSales|Northeast1","12707134":"นายสุทธิชัย บำรุงสวัสดิ์|CMSales|Northeast1","39055765":"น.ส.ฐิติยา คำวัน|Senior CMSales|Northeast1","39063590":"นางสาวจลินยาพร อาจอรัญ|CMSales|Northeast1","39102021":"น.ส.ขุนนรี ทองวิลัย|CMSales|Northeast1","39060126":"น.ส.อังศุมารินทร์ เบ้าลี|Senior CMSales|Northeast1","39064620":"นายราชันย์ อ่อนชัย|CMSales|Northeast1","39071664":"นายจิรพงศ์ เหล่าบัวบาน|CMSales|Northeast1","39081463":"น.ส.ปรียานุช เกสันเทียะ|CMSales|Northeast1","39129450":"นายเกียรติศักดิ์ ชูจัตุรัส|CMSales|Northeast1","39055799":"น.ส.วราภรณ์ สมภาร|CMSales|Northeast1","39085977":"นายพีระศักดิ์ เบ้าสองสี|Senior CMSales|Northeast1","39095288":"นายวุฒิศักดิ์ แก้วขุนทอง|CMSales|Northeast1","39118690":"นายชาญณรงค์ วรรณทอง|CMSales|Northeast1","39056384":"นายศราวุธ เกื้อสง|Senior CMSales|Northeast1","39109870":"น.ส.นภัสสร โคตรชมภู|CMSales|Northeast1","39130007":"นายกฤษดากรณ์ สาหล้า|CMSales|Northeast1","39130010":"นางสาววนิดา แสนมาตร|CMSales|Northeast1","39056403":"นายภูมินทร์ ภูเหิร|Senior CMSales|Northeast1","39126811":"นางสาวสุพัตรา ศฤงคาร|CMSales|Northeast1","39130006":"นายนปฎล ฐานะ|CMSales|Northeast1","39130009":"นายพร้อมพงษ์ พงษ์สพัง|CMSales|Northeast1","39130895":"นางสาวเกษมณี สอนทา|Senior CMSales|Northeast1","39130902":"นางสาวเกศราพร อิ่มจีน|CMSales|Northeast1","39131815":"นางพลอยไพลิน นามจันทร์|CMSales|Northeast1","39121416":"น.ส.วิยะดา สนสุนันท์|Senior CMSales|Northeast1","39126289":"นายวุฒิชัย พจนา|CMSales|Northeast1","39126573":"นายภูวนาท ศรีวิไล|CMSales|Northeast1","39130000":"นายขันติ ขัติยะ|CMSales|Northeast1","39125043":"น.ส.เกศรินทร์ มางิ้ว|Senior CMSales|Northeast1","39128616":"นางสาวกรรณิกา สินชัย|CMSales|Northeast1","39131029":"นางสาวศิริลักษณ์ จันทะลุน|CMSales|Northeast1","39131780":"นางสาวพัชรินทร์ โพธิ์อินทร์|CMSales|Northeast1","39056134":"นายอนิรุธ กุยทวีจร|Senior CMSales|Northeast2","39057228":"นายอานนท์ พลทองมาก|CMSales|Northeast2","39130351":"นางสาวชมพูนิกข์ กล้าหาญ|CMSales|Northeast2","39134159":"นางสาวพนิดา บุญใหญ่|CMSales|Northeast2","39121813":"นายจตุรงค์ เสาอนันต์|Senior CMSales|Northeast2","39131182":"นายกฤตยชญ์ ยมจันทร์|CMSales|Northeast2","39133532":"นางสาวณัฐฐินันท์ รอบแคว้น|CMSales|Northeast2","39056114":"นายวีรศักดิ์ ยอดสิงห์|Senior CMSales|Northeast2","39125002":"นางสาวปณิดา ธิมูลนี|CMSales|Northeast2","39129408":"นางสาวดารัณ อยู่สุข|CMSales|Northeast2","39130089":"นายอรรถภูมิ สุขสำราญ|CMSales|Northeast2","39056180":"นายจีระวัฒน์ ศรีสุข|Senior CMSales|Northeast2","39105126":"น.ส.อรณิชา วัจนา|CMSales|Northeast2","39130195":"นางสาวจีระนันท์ แซ่จัน|CMSales|Northeast2","39130903":"นายมหรรฆพนธ์ กลีบกระโทก|CMSales|Northeast2","39055890":"น.ส.สุกัญญา สุขชีพ|Senior CMSales|Northeast2","39120344":"นายปวัตร ศรีพล|CMSales|Northeast2","39124510":"นางสาวกัญญณัช รัชจิรากุล|CMSales|Northeast2","39128273":"นายปรเมษฐ์ สีจันทา|CMSales|Northeast2","39057091":"น.ส.ธิดาวรรณ สันติพงษ์ไพบูลย์|CMSales|Northeast2","39061392":"น.ส.ยุวรี ศรีงาม|Senior CMSales|Northeast2","39098020":"น.ส.นิตยา จอกแก้ว|CMSales|Northeast2","39127053":"นายกิตติศักดิ์ ชารัมย์|CMSales|Northeast2","39130285":"นายธนภัทร มูลพิมพ์|CMSales|Northeast2","39082654":"น.ส.วราภรณ์ ปัญญาคม|CMSales|Northeast2","39089330":"น.ส.นิยาพร จันทเสน|CMSales|Northeast2","39091512":"นายสันติภาพ บัวงาม|Senior CMSales|Northeast2","39124755":"นายกันต์กฤต สังฆพรม|CMSales|Northeast2","39099531":"น.ส.สุดารัตน์ ศรีแก้ว|CMSales|Northeast2","39105057":"น.ส.จามจุรี สุทธไชยวัฒน์|Senior CMSales|Northeast2","39109843":"น.ส.รัตนา แก้วเชียงทอง|CMSales|Northeast2","39121475":"น.ส.ฉัจชราภรณ์ โคตะระ|CMSales|Northeast2","39126285":"นายสหภาพ ศิรินอก|CMSales|Northeast2","39064264":"นายสนธยา สมบูรณ์|Senior CMSales|Northeast2","39077698":"น.ส.ศิริวิภา จันทร์วิเศษ|CMSales|Northeast2","39116527":"นางสาวศศินภา ฉัตรวิไล|CMSales|Northeast2","39122382":"นายชัยวัฒน์ บุญแท้|CMSales|Northeast2","39130987":"นางสาวชมพูนุช คำพันธ์|CMSales|Northeast2","39056108":"นายพรชัย อุนารี|CMSales|Northeast2","39056308":"นายยุทธนา พรมลาย|CMSales|Northeast2","39077703":"น.ส.พรรษามาศ โหมดนอก|CMSales|Northeast2","39125042":"นายชาตรี สายสุข|CMSales|Northeast2","39133516":"นายกิตติศัพท์ สายพร|Senior CMSales|Northeast2","39068367":"น.ส.อาธิตญา นะราช|CMSales|Northeast2","39107344":"นายฉัตรชัย ทอนจรุง|CMSales|Northeast2","39110573":"นายธนกฤต เจริญไตร|CMSales|Northeast2","39130012":"นางสาวน้ำฝน รี้พล|Senior CMSales|Northeast2","39130988":"นางสาวอาริญา ทองวรณ์|CMSales|Northeast2","39130898":"นางสาวศิริลักษณ์ ดวงดี|CMSales|Central-West","39130900":"นางสาวญาตาวี วิบูลย์พันธ์|CMSales|Central-West","39130907":"นางสาวภัคสรกัญญ์ จันทร์เชื้อ|CMSales|Central-West","39132132":"นางสาวกันยากร ประไชยโย|CMSales|Central-West","39056061":"นางจันทร์ทิมา พูลธนะ|CMSales|Central-West","39090329":"น.ส.ธนิภา ภานนท์ทวี|Senior CMSales|Central-West","39130011":"นางสาวชลาลัย ประดิษฐ์พงษ์|CMSales|Central-West","39132133":"นางสาวรัตติกาล นกแก้ว|CMSales|Central-West","39132134":"นางสาวณัฏฐณิชา แต่งแดน|CMSales|Central-West","39055811":"น.ส.ดุษยา พละศักดิ์|Senior CMSales|Central-West","39107683":"น.ส.อาภาภรณ์ เนียมชาวนา|CMSales|Central-West","39116524":"น.ส.อัจฉราภรณ์ สว่างวงษ์|CMSales|Central-West","39056209":"นายวีระวุฒิ เกตุตระกูล|Senior CMSales|Central-West","39056435":"นางชนิตา ชัยบุรินทร์|CMSales|Central-West","39127290":"นายณัฏฐากร นิ่มลมัย|CMSales|Central-West","39128275":"นายภูริทัต ภู่ตระกูล|CMSales|Central-West","39056601":"น.ส.นารี พึ่งพระเดช|CMSales|Central-West","39091374":"น.ส.กมลรัตน์ เดชชนะ|Senior CMSales|Central-West","39127021":"นางสาวเนติวดี บูรณ์โภคา|CMSales|Central-West","39129409":"นางสาวมัทวัน เพชรคง|CMSales|Central-West","39123988":"นางสาวพิมลมาศ บุญทองอยู่|CMSales|Central-West","39128269":"นายวรัญญู พลับพลาทอง|Senior CMSales|Central-West","39130008":"นางสาวทิพย์สุดา สังข์ทอง|CMSales|Central-West","39055910":"นายวัชรพงศ์ ชัยเนตร|Senior CMSales|Central-West","39077017":"น.ส.รัตนาวลี ธูปบูชา|CMSales|Central-West","39079243":"น.ส.มุขมณี วงศ์ปัญ|CMSales|Central-West","39056337":"นายภราดร กวางแก้ว|Senior CMSales|Central-West","39080926":"น.ส.กฤษณา โพธิ์สุข|CMSales|Central-West","39105063":"นายภูวดล พุกเข้ม|CMSales|Central-West","39128991":"นายจิณณวัตร เหล่ากุดบอด|CMSales|Central-West","39129663":"นางสาวนารีรัตน์ ชูกลิ่น|CMSales|Central-West","39063276":"นายสุทธินันท์ ขันแก้ว|Senior CMSales|Central-West","39086566":"นายชาคริส เหมดี|CMSales|Central-West","39104927":"นายสรธัช ประภาวะกา|CMSales|Central-West","39123689":"น.ส.กัญญารัตน์ ดินขุนทด|CMSales|Central-West","39124499":"นางสาวรักสินีย์ โสมินธุ|CMSales|Central-West","39099372":"นายสุรชัย สุพีแดน|Senior CMSales|Central-West","39118477":"นายกฤตย์รภัทร เจริญผลภูรักษ์|CMSales|Central-West","39123961":"นายอมรเทพ ยิ้มเป็นสุข|CMSales|Central-West","39056325":"นายชลิต เจริญกิตติกุล|Senior CMSales|Central-West","39087821":"นางสาวบัณฑิตา รัตนสิทธิ์|CMSales|Central-West","39104799":"น.ส.สุธาทิพย์ ศิริรัตน์|CMSales|Central-West","39105453":"นายสมบูรณ์ สำเภาทอง|CMSales|Central-West","39133518":"นายสหัสวรรษ สีรุ้ง|CMSales|Central-West","39056502":"นายยงยศ ยี่สุ่นเทศ|Senior CMSales|Central-West","39093003":"น.ส.วริศรา ชัยทอง|CMSales|Central-West","39109758":"น.ส.สโรชา พวงกลิ่น|CMSales|Central-West","39114169":"นายถนอมพล ศังขะภูติ|CMSales|Central-West","39085760":"นายพิมาณ เล็กเจริญ|Senior CMSales|Central-West","39128623":"นายสิทธิชัย อ่อนท่าลาด|CMSales|Central-West","39129446":"นางสาวสุธาทิพย์ ทองบุญตาด|CMSales|Central-West","39129447":"นายเกียรติศักดิ์ สีสุดทา|CMSales|Central-West","39134157":"นางสาวสุรารักษ์ ถี่ถ้วน|CMSales|Central-West","39070868":"น.ส.ดวงนภา รุ่งเรือง|CMSales|Central-West","39092748":"นายจักรินทร์ นวมงาม|Senior CMSales|Central-West","39099832":"น.ส.ปริยาภัทร ทองย้อย|CMSales|Central-West","39109018":"น.ส.จุฑามาศ คล้ายคลึง|CMSales|Central-West","39118177":"น.ส.จิราภรณ์ พันธุ์นุ้ย|CMSales|Central-West","39055810":"นายจีรภัทร วาณิชย์มานะกุล|Senior CMSales|Central-West","39080403":"นายกฤษฎา สวามิตร|CMSales|Central-West","39083240":"น.ส.ศิริลักษณ์ สุขเสถียร|CMSales|Central-West","39114855":"น.ส.ดวงพร เหมือนโสภา|CMSales|Central-West","39116397":"นายสุทธิพงษ์ พันธเสน|CMSales|Central-West","39056361":"นายญาณพัฒน์ มะปัญญา|Senior CMSales|Central-West","39056544":"น.ส.ธนัทอร โรจนบุญญานนท์|CMSales|Central-West","39097936":"น.ส.จุฬาลักษณ์ สมคำเพชร|CMSales|Central-West","39127022":"นายมานพ เกิดยงค์|CMSales|Central-West","39130346":"นางสาวณัฐพัชร์ บุญคุ้ม|CMSales|Central-West","39056625":"นายพงศกร ศรีวันทา|Senior CMSales|Central-West","39094972":"นายโชติวัฒน์ ศิริพจนาวรรณ|CMSales|Central-West","39108646":"น.ส.อุไรพร รัตนพลที|CMSales|Central-West","39133517":"นายวทัญญู เฟรเซอร์ แร็พพ์ส|CMSales|Central-West","39056359":"นายวิชชากร เสียงไพเราะ|Senior CMSales|Central-West","39066383":"นายวิษณุ ชลบุญ|CMSales|Central-West","39101962":"น.ส.นวลลดา เสือคง|CMSales|Central-West","39103096":"น.ส.เย็นฤดี ชัยบำรุง|CMSales|Central-West","39110119":"น.ส.ณัฏฐาพร มณีงาม|CMSales|Central-West","39118893":"นายรุ่งโรจน์ อยู่เป๋า|CMSales|Central-West","12708222":"น.ส.โซเฟีย เซาเพ|CMSales|Central-West","39056493":"นายธนัญชัย นงเยาว์|Senior CMSales|Central-West","39057894":"นางสาวมะลิสา ทิวรักษา|CMSales|Central-West","39107389":"น.ส.ณิชาภา เนื่องจำนงค์|CMSales|Central-West","39108311":"น.ส.วรรชลาพร พรหมหากุล|CMSales|Central-West","39056489":"น.ส.ระพีพรรณ ขยันกิจ|Senior CMSales|South","39090138":"น.ส.ปารมี บุญอารี|CMSales|South","39097450":"น.ส.เสาวภา ชมสุวรรณ|CMSales|South","39109168":"นายสุพิชัย กมลมาลย์|CMSales|South","39130367":"นางสาวอรณิชา รักษายศ|CMSales|South","39130369":"นางสาวปิยาพัชร แสวงสุข|CMSales|South","39133512":"นายมานพ คู่ประดิษฐ์|CMSales|South","39122373":"นางสาวชลิตา มัฏฐาพันธ์|CMSales|South","39122693":"นายวิทยา สุขฉนวน|CMSales|South","39127060":"นายธวัชชัย ทองผอม|Senior CMSales|South","39127446":"นางสาวปภัสสร สว่างวงค์|CMSales|South","39056033":"นายอาติบ สะอิ|CMSales|South","39068725":"น.ส.มูยาฮีดะห์ จะรง|Senior CMSales|South","39071517":"น.ส.ไอซะห์ คาเร็ง|CMSales|South","39103952":"น.ส.นุรลีซา มะมิง|CMSales|South","39074862":"น.ส.รอกีเยาะ ยีดิง|CMSales|South","39074875":"น.ส.นูไอนิง ยูนุ๊|Senior CMSales|South","39085481":"นายซูไฮมิง รอแง|CMSales|South","39094656":"น.ส.นูไอซะ เจ๊ะปอ|CMSales|South","39092848":"นายอาซูวัน เจ๊ะสาและ|CMSales|South","39094490":"น.ส.รอหานา สะแม|CMSales|South","39097935":"น.ส.สลิสา หะยีรอมือลี|CMSales|South","39068742":"น.ส.สุไรมา เยง|CMSales|South","39095359":"นายนิเซะ นิแม|CMSales|South","39107073":"นายฮาซัน ดือรอเซะ|Senior CMSales|South","39110350":"นายซารีฟ หะยีดือเระ|CMSales|South","39122372":"นางสาวอารีนา เปาะด๊ะ|CMSales|South","39083858":"น.ส.เกศวดี อ้นบุตร|Senior CMSales|South","39130368":"นางสาวสินีนาฏ สาครจิตร|CMSales|South","39130896":"นางสาวน้ำเพชร สุขราษฎร์|CMSales|South","39132136":"นายทรงเกียรติ ฉ่ำประสิทธิ์|CMSales|South","39133509":"นางสาวสุทธิดา โลกถวิล|CMSales|South","39134158":"นายอภิวัฒน์ ทาไทสงค์|CMSales|South","39134160":"นางสาวฐานิตา รวมชัยภูมิ|CMSales|South","39090642":"น.ส.มาริสา จันแก้ว|CMSales|South","39127476":"นายวีรกิต แสงสุข|Senior CMSales|South","39127738":"นายศุภวัต นฤภัย|CMSales|South","39128613":"นายณัฐวุฒิ แป้นเอียด|CMSales|South","39130005":"นางสาวจารุวรรณ ธนลัทธกุล|CMSales|South","18502222":"นางสาวปานเลขา ศรีเกตุ|CMSales|South","39071543":"น.ส.โสภาพรรณ ธาดาธนากร|CMSales|South","39093742":"น.ส.ซอบรีนา เจะมุ|Senior CMSales|South","39103453":"น.ส.ญาณิศา ขุนนุ้ย|CMSales|South","39133519":"นายอนุรักษ์ ทับไทย|CMSales|South","39109865":"นายอนุกูล ณรงค์|Senior CMSales|South","39130001":"นางสาวอัจฉรา นิ่มมา|CMSales|South","39121949":"ธาดา อุ่นทรัพย์|Sales Supervisor|BMA-West","39122039":"ปณิธาน แจ้งกลาง|Sales Staff|BMA-West","39129490":"ภารวี เมืองเกลี้ยง|Sales Staff|BMA-West","39129510":"ปภังกร ทรงเที่ยง|Sales Staff|BMA-West","39119574":"ธิติมา นาคทับ|Sales Supervisor|BMA-West","39130932":"ไกรศิริ ปิณฑะเกษตริน|Sales Staff|BMA-West","39130934":"สุภาภรณ์ ภูถมดี|Sales Staff|BMA-West","39133541":"ยุวดี โดยคำดี|Sales Staff|BMA-West","39120144":"ภัทรนันท์ แสงทอง|Sales Supervisor|BMA-West","39127398":"ทิพวัลย์ ไทยเอื้อ|Sales Staff|BMA-West","39129732":"นรินทร์ ศรศรี|Sales Staff|BMA-West","39132855":"พิมญาดา อินทรทองมอญ|Sales Staff|BMA-West","39132859":"ธนภรณ์ แซ่หว่อง|Sales Staff|BMA-West","39112042":"ศุภมาส แสงสว่าง|Sales Supervisor|BMA-West","39112052":"มงคลชัย กลิ้งรัมย์|Sales Staff|BMA-West","39128100":"กัญญาภัค แต้อุ้ย|Sales Staff|BMA-West","39129057":"สิริพร แสงสว่าง|Sales Staff|BMA-West","39114253":"นิสาชล แก้วโกมุท|Sales Supervisor|BMA-West","39114425":"รุ่งรวิน สุปิณะ|Sales Staff|BMA-West","39128022":"พรภจันทร์ เลิศภัทรนิรันต์|Sales Staff|BMA-West","39129426":"จุฑารัตน์ กุนด้วง|Sales Staff|BMA-West","39118108":"ปิติมา แก้วก่า|Sales Supervisor|BMA-West","39118344":"ชาญณรงค์ มะหันต์|Sales Staff|BMA-West","39118843":"พีรพัฒน์ นาคดี|Sales Staff|BMA-West","39118915":"รุ่งธิดา อ่อนจิ๋ว|Sales Staff|BMA-West","39132508":"ปฏิภาณ แก้วก่า|Sales Staff|BMA-West","39122601":"เอกชัย ขวัญธิบดี|Sales Supervisor|BMA-West","39125012":"ฉัตรตรีญา แย้มบุบผา|Sales Staff|BMA-West","39132857":"ณัฎฐกมล ส่องแสง|Sales Staff|BMA-West","39132860":"วิลาวรรณ จันทะเพ็ง|Sales Staff|BMA-West","39114265":"พรรษมณฑ์ จิรพรภูวโรจน์|Sales Supervisor|BMA-West","39114421":"วริษา มั่นยิ้ม|Sales Staff|BMA-West","39121164":"วิชาญ ปุราทะกัง|Sales Staff|BMA-West","39133521":"ปาริชาติ พูนขวัญ|Sales Staff|BMA-West","39116028":"ปรางทิพย์ เพียรราช|Sales Supervisor|BMA-West","39117013":"รัตน์ตัญญู สุทธิธรรมานต์|Sales Staff|BMA-West","39128755":"ปัญญาพร แก้วกัลยา|Sales Staff|BMA-West","39130702":"พีรวิชญ์ กิตติศิลากร|Sales Staff|BMA-West","39115718":"ธนวรันญ์ พริ้งประเสริฐ|Sales Supervisor|BMA-East","39122619":"รัฎฐกร ลำธารทอง|Sales Staff|BMA-East","39128173":"สมพร ภัยสยม|Sales Staff|BMA-East","39130302":"พัชรินทร์ บุสภาค|Sales Staff|BMA-East","39121225":"ชุติกาญจน์ ใจแข็ง|Sales Supervisor|BMA-East","39121852":"ธัญพิชชา คีรินทร์|Sales Staff|BMA-East","39132546":"วสันต์ เวชรังษี|Sales Staff|BMA-East","39126140":"พัณณิตา ศรีโสภณ|Sales Supervisor|BMA-East","39127072":"ชมพูนุช ปุยเจริญ|Sales Staff|BMA-East","39128767":"นฤนาถ ลอประยูร|Sales Staff|BMA-East","39126661":"รุ่งทิพย์ ขึมสันเทียะ|Sales Staff|BMA-East","39133534":"ชัยวิทย์ หวังผล|Sales Staff|BMA-East","39134072":"จุฬาวรรณ นิธิวิวรรธน์|Sales Staff|BMA-East","39114274":"เมษยา ว่องวุฒิ|Sales Supervisor|BMA-East","39121226":"มธุชา สระทองเดช|Sales Staff|BMA-East","39122375":"บุษรินทร์ ใจอ่อน|Sales Staff|BMA-East","39122376":"สุธิษา ศรเดช|Sales Staff|BMA-East","39125980":"กณิษา ธนยศวีร์|Sales Staff|BMA-East","39120189":"วรนุช บุญเลี้ยง|Sales Supervisor|BMA-East","39116446":"อติพล แซ่ตึ่ง|Sales Supervisor|BMA-East","39131081":"ฐากร บัวพาคำผง|Sales Staff|BMA-East","39132699":"ศรัณย์รัชต์ นวกิจไพศานต์|Sales Supervisor|BMA-East","39132856":"พันธกานต์ แจ้งเจริญ|Sales Staff|BMA-East","39132863":"อนุสรา รอดคง|Sales Staff|BMA-East","39120455":"เอวิกา เกษรักษา|Sales Staff|East","39122241":"กชพร ธนภรโชติวานิช|Sales Supervisor|East","39125965":"กรรณิการ์ รุ่งอรุณศรี|Sales Staff|East","39127548":"นคเรศ คุ้มสุพรรณ|Sales Staff|East","39130760":"อมรา แกล้วกล้า|Sales Staff|East","39130771":"สันติชัย ศรีสม|Sales Staff|East","39125874":"ชยาภรณ์ สุยะเพี้ยง|Sales Supervisor|East","39126132":"อานนท์ พนัสสารกุล|Sales Staff|East","39127250":"ปภาวิน บุญศรี|Sales Staff|East","39131799":"สิทธิโชค พระกระโทก|Sales Staff|East","39114217":"วรพรรณ วงษ์เพ็ง|Sales Supervisor|East","39120191":"นพวรรณ สักกลาง|Sales Staff|East","39128408":"อานนท์ บุญฤทธิ์|Sales Staff|East","39131035":"ภรณ์ทิพย์ ดุจจานุทัศน์|Sales Staff|East","39118581":"พรธิดา ศาลาฤทธิ์|Sales Supervisor|East","39120317":"วัชระ ศาลาฤทธิ์|Sales Staff|East","39129953":"สำเริง พวงทอง|Sales Staff|East","39131034":"อริยทรัพย์ สีเผือก|Sales Staff|East","39117957":"สุไพริน ช่องวารินทร์|Sales Supervisor|East","39118016":"บงกช สดสว่าง|Sales Staff|East","39133538":"สุรศักดิ์ เครือเพชร|Sales Staff|East","39133543":"บุญเรือน รักผล|Sales Staff|East","39114219":"สุทิน แสงทอง|Sales Staff|East","39114233":"วิมล นาบง|Sales Supervisor|East","39128840":"ชลธิชา สุบิน|Sales Staff|East","39130763":"อรประภา จักรน้อย|Sales Staff|East","39132700":"ชุติกาญน์ สุดตามัย|Sales Staff|East","39118346":"สักกะ พุ่มทอง|Sales Supervisor|East","39123469":"ปวรุตม์ เกตุแก้ว|Sales Staff|East","39127983":"ชลธี เดชอุดม|Sales Staff|East","39128659":"อำนาจ เหล่าพิลัย|Sales Staff|East","39130409":"ลลิตา พุ่มทอง|Sales Staff|East","39118641":"พงษ์พัฒน์ เพ็ชรศร|Sales Supervisor|East","39130215":"อชิรญา วงพาดกลาง|Sales Staff|East","39134092":"พงศธร ตันยะกุล|Sales Staff|East","39127058":"กมลวรรณ ปั้นสุรินทร์|Sales Supervisor|East","39127071":"สุชญา มาติยานนท์|Sales Staff|East","39127178":"ณัฐบดินทร์ ศรีสวัสดิ์|Sales Staff|East","39131037":"สุธิตา วรโพด|Sales Staff|East","39121627":"นพพันธ์ ประดิษฐ์ศิลป์|Sales Supervisor|North","39122607":"นารี ลไว|Sales Staff|North","39129512":"อภิเดช ศรีเพชรพงษ์|Sales Staff|North","39132545":"สุวิญชา จันต๊ะตึง|Sales Staff|North","39134066":"พิชญา สืบสอน|Sales Staff|North","39134069":"ดำรงศักดิ์ วงค์ตาน้อย|Sales Staff|North","39134071":"ดวงกมล พิมพ์สมาน|Sales Staff|North","39126490":"จตุรงค์ ฉวีพิศาล|Sales Supervisor|North","39128571":"นิรชา สารินจา|Sales Staff|North","39131033":"ตัสนีม ศรีวิชัย|Sales Staff|North","39132663":"วรากร เต๋จะ|Sales Staff|North","39121623":"ชัยวัฒน์ บุญสุข|Sales Supervisor|North","39127461":"ธิษณะ กันทะวัง|Sales Staff|North","39127469":"อภิรักษ์ ศิริอ่อน|Sales Staff|North","39128585":"ชวลิต กาฬสุวรรณ|Sales Staff|North","39129481":"นิภาพร ดู่คำ|Sales Staff|North","39129556":"รวินันท์ อินศักดิ์|Sales Supervisor|North","39129846":"ปภาวิชญ์ อินธิศักดิ์|Sales Staff|North","39130406":"กรรณิกา สอนฤทธิ์|Sales Staff|North","39126686":"คชาธิป หุ้มแพร|Sales Supervisor|North","39126700":"รุจิเรช ธงยศ|Sales Staff|North","39130307":"เบญญทิพย์ โพธิ์พรม|Sales Staff|North","39130762":"พีรวัตร อุ่นทราย|Sales Staff|North","39114438":"สิริลักษณ์ แสงวรรณ|Sales Supervisor|North","39119665":"โภควินท์ พรมงาม|Sales Staff|North","39125976":"อนุสรณ์ ยุทธชัย|Sales Staff|North","39129111":"เอกดนัย กำเหนิด|Sales Supervisor|North","39129215":"พงศกร จันทร์กลิ่น|Sales Staff|North","39129729":"พิมพ์ศิริ จ่ากร่าง|Sales Staff|North","39132544":"ลดาวัลย์ พูนศิลป|Sales Staff|North","39134147":"ศันสนี พ่อพิลา|Sales Staff|North","39134149":"วรรณวลี ท้วมเพชร|Sales Staff|North","39134153":"ศรันธ์ ฉวีจันทร์|Sales Staff|North","39114245":"ประภาพร สำเภาทอง|Sales Supervisor|North","39123041":"ศุภวิทย์ ปัญญาภาส|Sales Staff|North","39126510":"ภานุวิทย์ สอนมา|Sales Staff|North","39127473":"สุทธิพันธ์ สุทธานุกูล|Sales Staff|North","39130759":"ช่อเพชร มีดี|Sales Staff|North","39114272":"พัชรินทร์ เดชงู|Sales Supervisor|North","39126985":"สลักจิตร เสวิสิทธิ์|Sales Staff|North","39127441":"สุปัญญา แดงสว่าง|Sales Staff|North","39127742":"สราวุฒิ มีพร้อม|Sales Staff|North","39127802":"เวชชัยยัณ รานุช|Sales Staff|North","39121411":"อภิสิทธิ์ พานารัตน์|Sales Supervisor|Northeast1","39132858":"ธนวัฒน์ บัวบาน|Sales Staff|Northeast1","39134146":"ธนากร ธรรมรัตน์|Sales Staff|Northeast1","39134150":"เกียรติศักดิ์ ตุ้มเมืองโดน|Sales Staff|Northeast1","39134151":"กฤติพงศ์ เฉวียงภพ|Sales Staff|Northeast1","39133533":"จรัญ รอดภัย|Sales Staff|Northeast1","39133536":"ชุติกาญจน์ จันทร์บุญ|Sales Staff|Northeast1","39116240":"ศุภชัย สรรพคุณ|Sales Staff|Northeast1","39116612":"กิตติณัฏฐ์ ณ โกศิลป์|Sales Supervisor|Northeast1","39129816":"วราภรณ์ นิลบุตร|Sales Staff|Northeast1","39129844":"พรทิพย์ หล่าบุตรศรี|Sales Staff|Northeast1","39130767":"พรนภา ไชยยนต์|Sales Staff|Northeast1","39121625":"ปิยะฉัตร จ่าบุญ|Sales Supervisor|Northeast1","39125726":"สุธาสินี พัทคายนต์|Sales Staff|Northeast1","39130761":"ณปภัช ฉายประดับ|Sales Staff|Northeast1","39133535":"สุจิรา พิมพงษ์ต้อน|Sales Staff|Northeast1","39114215":"ธนาศักดิ์ ขานเกตุ|Sales Supervisor|Northeast1","39114392":"หยาดพิรุณ อ้อจันทึก|Sales Staff|Northeast1","39130217":"เกียรติศักดิ์ พรมแพน|Sales Staff|Northeast1","39130306":"อภิวัฒน์ สุตันติราษฎร์|Sales Staff|Northeast1","39125019":"สวรส คำสะอาด|Sales Staff|Northeast1","39126975":"พีรวัฒน์ พรหมแสนวิเศษ|Sales Supervisor|Northeast1","39130405":"กมลศักดิ์ ยุบล|Sales Staff|Northeast1","39134089":"บุญญรัตน์ ปัดถาวะโร|Sales Staff|Northeast1","39120936":"กัณณ์ณณัฏฐ์ ลาภบุญเรือง|Sales Supervisor|Northeast1","39121088":"เสกสรร แสงประจักษ์|Sales Staff|Northeast1","39124392":"ภาณุวัฒน์ ชอบอาภรณ์|Sales Staff|Northeast1","39124788":"เปรมสินีย์ ปู่แก้ว|Sales Supervisor|Northeast1","39127743":"ธิดารัตน์ เจริญไทย|Sales Staff|Northeast1","39127994":"ฤทัยรัตน์ ราชบัญดิษฐ์|Sales Staff|Northeast1","39115897":"มนัสชัย พึ่งมี|Sales Supervisor|Northeast1","39125724":"นาถชิดา เหล่าทอง|Sales Staff|Northeast1","39126509":"อภิสิทธิ์ คงสงค์|Sales Staff|Northeast1","39128774":"ธนพร จันทรสุต|Sales Staff|Northeast1","39127493":"วุฒระวัฒน์ มิ่งโอโล|Sales Supervisor|Northeast1","39127752":"มงคล แก้วกงพาน|Sales Staff|Northeast1","39128762":"ฉัตรปราการ จิตรเจริญ|Sales Staff|Northeast1","39134070":"เจษฎา วงศรีงาม|Sales Staff|Northeast1","39134085":"ธีระนิตย์ ศรีภูพาน|Sales Staff|Northeast1","39114629":"อาทิตย์ ธนูมา|Sales Supervisor|Northeast2","39114664":"รองฤทธิ พนุมรัมย์|Sales Staff|Northeast2","39116223":"จุฑาลักษณ์ แสงน้ำ|Sales Staff|Northeast2","39124596":"เบญจมาภรณ์ คอนรัมย์|Sales Staff|Northeast2","39130309":"อัจฉราภรณ์ แช่มรัมย์|Sales Staff|Northeast2","39115811":"กนกวรรณ สัณฑะมาศ|Sales Supervisor|Northeast2","39121745":"พีรเดช เกตุอินทร์|Sales Staff|Northeast2","39121790":"ชลลดา บำรุงเมือง|Sales Staff|Northeast2","39134086":"วุฒิไกร จำปาปี|Sales Staff|Northeast2","39134087":"ตะวัน คำพรมมา|Sales Staff|Northeast2","39127248":"กิตติพร พันธ์เลิศ|Sales Supervisor|Northeast2","39130766":"กนกพร เดชแสง|Sales Staff|Northeast2","39130935":"สุจิตรา โสภาวะนัส|Sales Staff|Northeast2","39127895":"สมยศ บุญเมือง|Sales Supervisor|Northeast2","39128927":"นิตยา มาตย์หนองแวง|Sales Staff|Northeast2","39129431":"ภานุวัฒน์ คงพุดซา|Sales Staff|Northeast2","* ติด Code ช่องทาง Call Center 39124047 TSM/PA Out":"วรัญญา ภู่พลับ|Sales Staff|Northeast2","39129212":"จิตราพร จ้องกลาง|Sales Supervisor|Northeast2","39130930":"ศุภศิลป์ เจริญศรี|Sales Staff|Northeast2","39130938":"ชญาภา สาริโย|Sales Staff|Northeast2","39114243":"มงคล สังฆมโนเวศ|Sales Supervisor|Northeast2","39116765":"สังฆเทพ สัตย์ซื่อ|Sales Staff|Northeast2","39126128":"พลอยแก้ว จันทร์แจ|Sales Staff|Northeast2","39131767":"ภัทรดนัย กิ่งแก้ว|Sales Staff|Northeast2","39132862":"กฤติพงศ์ หมื่นท้าว|Sales Staff|Northeast2","39114636":"ธนเดช รังสถิตย์|Sales Supervisor|Northeast2","39114648":"กมลรัตน์ ไพเราะ|Sales Staff|Northeast2","39131765":"ภานุวัฒน์ ชัชวาลย์|Sales Staff|Northeast2","39132861":"ชนัฐศ์กาณภ์ โนนทิง|Sales Staff|Northeast2","39132865":"วชิรพล สายยืน|Sales Staff|Northeast2","39122242":"ปุณณกิจ เคลือดี|Sales Supervisor|Northeast2","39128575":"คมกฤษ ศิริโสม|Sales Staff|Northeast2","39129221":"จิรายุทธ์ ศรีวะอุไร|Sales Staff|Northeast2","39129666":"ศิริมงคล มินทร์จันทึก|Sales Staff|Northeast2","39132864":"จุฑารัตน์ จันดารักษ์|Sales Staff|Northeast2","39115685":"ชัยพร สอนรอด|Sales Supervisor|Central-West","39121850":"พรวิมล เปี่ยมมี|Sales Staff|Central-West","39130017":"รัญชิดา พรหมมิน|Sales Staff|Central-West","39127459":"ฟาร์รีดา แพทอง|Sales Staff|Central-West","39129112":"เมธา แพทอง|Sales Staff|Central-West","39129227":"ชวณากร ชื่นรุ่ง|Sales Supervisor|Central-West","39130772":"ปัทมา ดอนทอง|Sales Staff|Central-West","* ติด Code ตัวแทน 39097434 WW/CMSales":"พรพรรณ คงสนุ่น|Sales Staff|Central-West","39117406":"จิราธิป มีโพธิ์|Sales Supervisor|Central-West","39117407":"นุชวรา วิรัชวงศ์|Sales Staff|Central-West","39122253":"ยุพิน นาทันริ|Sales Staff|Central-West","39130774":"นภัส บุญธรรม|Sales Staff|Central-West","39116620":"สุรัตน์ พุทธรักษา|Sales Staff|Central-West","39127806":"อรอนงค์ ชูผกา|Sales Staff|Central-West","39130928":"ภีมเดช แสนยากุล|Sales Staff|Central-West","39130929":"สุทธิราช จันทร์รอด|Sales Staff|Central-West","39134065":"ณัฐวุฒิ เรืองสุริยัน|Sales Staff|Central-West","39113935":"สิทธิโชค ทิมศรีกล่ำ|Sales Supervisor|Central-West","39114106":"กมลชนก ห่างถิ่น|Sales Staff|Central-West","39128017":"จักรพันธ์ มีคุณาวัฒน์|Sales Staff|Central-West","39129664":"ภิญญดา ชื่นตา|Sales Staff|Central-West","39117066":"อนันตพล สิมมาเลาเต่า|Sales Supervisor|Central-West","39128055":"ชิสา เทพกาวิระ|Sales Staff|Central-West","39128059":"ภาณุวัฒน์ จันทร์อินทร์|Sales Staff|Central-West","39133544":"เมธินี กลัดสุข|Sales Staff|Central-West","39126687":"พรพรรณ สีปราง|Sales Supervisor|Central-West","39126696":"พีรพัฒน์ หอมชื่น|Sales Staff|Central-West","39128246":"พิชชาพร ขำวงษ์|Sales Staff|Central-West","39130211":"พิชญธิดา สังข์งาม|Sales Staff|Central-West","39132698":"ชนะเดช จุปะมัตตัง|Sales Staff|Central-West","39133520":"สมทรัพย์ ชอบทำพัฒนา|Sales Supervisor|Central-West","39133540":"ชุติพร หอมเย็นใจ|Sales Staff|Central-West","39133542":"ธนดล กองทวี|Sales Staff|Central-West","39114225":"บุษยะมาศ แซ่ว่อง|Sales Supervisor|Central-West","39114363":"ศุภกร ศรีโรทก|Sales Staff|Central-West","39126141":"วนศักดิ์ รอบแคว้น|Sales Staff|Central-West","39128577":"กนกวรรณ ศรียา|Sales Staff|Central-West","39134090":"อุดม สุวรรณลอยล่อง|Sales Staff|Central-West","39114250":"พรทิพย์ ปานเมือง|Sales Supervisor|Central-West","39114420":"ดารินีรัตน์ ตันสุวรรณ|Sales Staff|Central-West","39119709":"อติราช กิติกาญจน์|Sales Staff|Central-West","39129487":"จิราภา ก้านจักร|Sales Staff|Central-West","39129848":"เอมิกา จันทร์ศรี|Sales Staff|Central-West","39115719":"ณฐกร ศิริชู|Sales Supervisor|Central-West","39115732":"พีรพล วารินินทร์|Sales Staff|Central-West","39129484":"ปิยะวดี จันตรานุช|Sales Staff|Central-West","39129730":"รัตนพร เรืองเขตร|Sales Staff|Central-West","39117236":"ไพเราะ ใจงาม|Sales Supervisor|Central-West","39128646":"รัตน์ติกาล ปานเจริญ|Sales Staff|Central-West","39128807":"สุนิสา ป่าโพธิ์แก้ว|Sales Staff|Central-West","39129821":"ณัฐกมล เด็ดดวง|Sales Staff|Central-West","39134145":"ชนิดา คงนิสัย|Sales Staff|Central-West","39134148":"ปนัดดา สิทธิการ|Sales Staff|Central-West","39116165":"นพดล อ้นทา|Sales Supervisor|Central-West","39116174":"มานิตา ภาชนะปรีดา|Sales Staff|Central-West","39121162":"อรนงค์ มรกตเขียว|Sales Staff|Central-West","39131763":"ศราวุธ หน่อแก้ว|Sales Staff|Central-West","39131764":"สกุณา รอดฉ่ำ|Sales Staff|Central-West","39118844":"ปัณณธร มีสมพงษ์|Sales Supervisor|Central-West","39127804":"ปทิตตา พุทธเครือ|Sales Staff|Central-West","39130018":"ชุติมา ขุงชัยภูมิ|Sales Staff|Central-West","39114242":"พิชญะ ไตรบุญ|Sales Supervisor|Central-West","39126172":"เมตตา จีระชยาภรณ์|Sales Staff|Central-West","39126991":"ภูษณิศา ง่วนหอม|Sales Staff|Central-West","39132543":"ธัญวรัตน์ ฉิ่งทองคำ|Sales Staff|Central-West","39122933":"เอกพล มุตโต|Sales Supervisor|Central-West","39123187":"สาวิตรี สุขเกิด|Sales Staff|Central-West","39124387":"อรัญธรรม ปูทา|Sales Staff|Central-West","39128023":"นัยนา ยันนาวา|Sales Staff|Central-West","39124938":"สิทธิพล สุวรรณบุตร์|Sales Supervisor|Central-West","39124954":"คุณัญญา ศุภชิตกิจ|Sales Staff|Central-West","39129968":"นิติวัฒน์ รักท้วม|Sales Staff|Central-West","39132541":"ภัทราพร เกตุบุญลือ|Sales Staff|Central-West","39134144":"พิชญ์สินี บริสุทธิ์|Sales Staff|Central-West","39125431":"อุไรวรรณ ศิลานนท์|Sales Supervisor|Central-West","39127551":"ราตรี ทองช่วย|Sales Staff|Central-West","39129967":"พุฒิพงศ์ ศิลานนท์|Sales Staff|Central-West","39130208":"จุฑามาศ พรหมบุญทอง|Sales Staff|Central-West","39132542":"อดิเทพ ใจอารีย์|Sales Staff|Central-West","39125905":"สุภาภรณ์ สุวิชา|Sales Supervisor|South","39127803":"สุดารัตน์ เพชรอาวุธ|Sales Staff|South","39128443":"ปรารถนา หอมเกษร|Sales Staff|South","39130300":"ธนัตดา แก้วโลก|Sales Staff|South","39114221":"จักรพงศ์ มุสิกชาติ|Sales Supervisor|South","39119318":"ญาติมา อภิวันท์|Sales Staff|South","39123047":"อมรรัตน์ ช่วยคงมา|Sales Staff|South","39129214":"ธณพัฒน์ พงษ์มาก|Sales Staff|South","39134154":"สุริโย เพชรจันทร์|Sales Staff|South","39114297":"สุชานันท์ ติ้งโหยบ|Sales Supervisor|South","39114384":"อธิญาพร ณ พัทลุง|Sales Staff|South","39123056":"จิราภรณ์ มาบัว|Sales Staff|South","39128438":"จักรพงศ์ ศุภกรร|Sales Staff|South","39130773":"หนึ่งฤทัย กลมเกลา|Sales Staff|South","39116714":"ปุลญดา อินชนะ|Sales Supervisor|South","39116785":"สุนารี คงดำ|Sales Staff|South","39116820":"ภารดี ขุนอ่อน|Sales Staff|South","39129961":"ศรราม ทองคณารักษ์|Sales Staff|South","39133539":"จันทร์เพ็ญ ชูนวลศรี|Sales Staff|South","39115026":"สูรีมัน สุหลง|Sales Supervisor|South","39115027":"มาซิลา มะแอ|Sales Staff|South","39127074":"มารียัม อุมา|Sales Staff|South","39128654":"อาซูรา อารง|Sales Staff|South","39134067":"อารีซัน อุมา|Sales Staff|South","39117646":"อานัส ลำเลียงพล|Sales Supervisor|South","39117668":"อามานี เจ๊ะนุ|Sales Staff|South","39120274":"นุรฟาตีฮะห์ มะเด|Sales Staff|South","39127500":"มาลาตี อิอะแต|Sales Staff|South","39130032":"ฟาตีเราะ มุนาแมะ|Sales Staff|South","39116924":"อรรถพล เลขะจิตร|Sales Staff|South","39114428":"สรวิชญ์ จันทลักขณา|Sales Supervisor|South","39116824":"จุฑามาศ คงแก้ว|Sales Staff|South","39117738":"จิตติมนต์ คงมา|Sales Staff|South","39128054":"สันติ แสงกุหลาบ|Sales Staff|South","39134152":"นัจญูวา หวังอีน|Sales Staff|South","39126562":"พรทิพย์ อีนหมาน|Sales Supervisor|South","39127436":"ชารีฟ ชอบงาม|Sales Staff|South","39129423":"ธีระพงศ์ นิลวรรณ|Sales Staff|South","39129964":"ศิริพร ขุนรายา|Sales Staff|South","39114383":"ศตวรรษ จวนแจ้ง|Sales Supervisor|South","39121738":"เพชรณลิน จันทร์น้อย|Sales Staff|South","39124682":"มณีรัตน์ ปานวัน|Sales Staff|South","39116715":"พงศ์ศักดิ์ จิตถนอม|Sales Supervisor|South","39116825":"พรทิพย์ ดำมี|Sales Staff|South","39120948":"สุภาพร นำพล|Sales Staff|South","39132540":"วรัญญา ชุมวรฐายี|Sales Staff|South","39130305":"ศิริขวัญ จันทร์ทอง|Sales Staff|South","39130308":"แจ๊ค ศรีเจริญศักดิ์|Sales Staff|South","39131798":"สุจิตรา พงษากลาง|Sales Supervisor|South","39133537":"จันทิมา โพธิ์โพ้น|Sales Staff|South","39114315":"กาญจนา พาหุรัตน์|Sales Staff|South","39127181":"ปทุมมาศ คุ้มไพรี|Sales Supervisor|South","39129959":"อัจฉรา ทองสง|Sales Staff|South","39130765":"อนัญญา ขุนเสถียร|Sales Staff|South","39114052":"น.ส.ณิชาดา เวียนขุนทด|PA WW SP|BMA-East","39128433":"นางสาวเบญจพร แบบอย่าง|PA WW SP|BMA-East","39128448":"นางสาวอธิติยา แก่นทอง|PA WW SP|BMA-East","39128449":"น.ส.ณัฏฐณิชา บุกสันเทียะ|PA WW SP|BMA-East","39130429":"นายปัญญา ขุนอินทร์|PA WW SP|BMA-East","39130743":"นางสาวศศิธร คันที|PA WW SP|BMA-East","39130744":"นางสาวอนงค์นาฎ พรหมศร|PA WW SP|BMA-East","39124396":"นายวรธน ทองจันทร์|PA WW SP|BMA-East","39124397":"นายอรรถพล เรืองฤทธิ์|PA WW SP|BMA-East","39130415":"นางสาวละมัย คำจิตร|PA WW SP|BMA-East","39130416":"นางสาวเพลินทิพย์ คำสุก|PA WW SP|BMA-East","39130417":"นางสาวธนพร คำสุก|PA WW SP|BMA-East","39130993":"นายเขมทัด บัวเรืองสกุล|PA WW SP|BMA-East","39130994":"นางปรางศรี ปรางทอง|PA WW SP|BMA-East","39111705":"น.ส.อรพรรณ รัตนพรประสิทธิ์|PA WW SP|BMA-East","39128213":"นางสาวฉวีวรรณ โคตมะ|PA WW SP|BMA-East","39130392":"นางสาวณัฐธิดา จารุมาศ|PA WW SP|BMA-East","39130221":"น.ส.ศิริลักษณ์ พลสิมมา|PA WW SP|BMA-East","39114556":"น.ส.บุณฑริก ยอดติ่ง|PA WW SP|BMA-East","39124011":"นายภาสกร คำภีรบุตร|PA WW SP|BMA-East","39126664":"นางสาววรรณิรัตน์ รักษ์ตัว|PA WW SP|BMA-East","39126665":"น.ส.จันจิรา ประชุมสงค์|PA WW SP|BMA-East","39128139":"นางสาวรัตนา โสดา|PA WW SP|BMA-East","39128140":"นายสมศักดิ์ รัสมี|PA WW SP|BMA-East","39128141":"นางสาวปณิตา แสงอำพันธุ์|PA WW SP|BMA-East","39128142":"นางสาวลลินดา จิตอารีย์|PA WW SP|BMA-East","39128354":"นางสาวนริสรา พินิจมนตรี|PA WW SP|BMA-East","39129521":"นายสุทธินันท์ เกษรสังข์|PA WW SP|BMA-East","39129523":"นางสาวไพรจิตร ศรีวิชัย|PA WW SP|BMA-East","39129533":"นายกิตติชัย พิมพิลาจันทร์|PA WW SP|BMA-East","39114080":"น.ส.อรอรุณวรรณ แสงเงิน|PA WW SP|BMA-East","39126476":"น.ส.ณัฏฐา มาศรี|PA WW SP|BMA-East","39130414":"นางสาวมณฑาทิพย์ ยิ่งยงค์|PA WW SP|BMA-East","39130747":"นายศราวุธ คงสุภาพ|PA WW SP|BMA-East","39132218":"นางสาวอทิตยา เพชร์เจริญ|PA WW SP|BMA-East","39114116":"น.ส.ธนัชญา กุลดี|PA WW SP|BMA-East","39128428":"นายสุรศักดิ์ อินทร์ทร|PA WW SP|BMA-East","39128429":"นายเรวัต พุทธชาติ|PA WW SP|BMA-East","39128456":"นายเกียรติศักดิ์ ศรีจันทร์|PA WW SP|BMA-East","39129736":"นายฐรชช์ ตั้งกิจดำรงค์|PA WW SP|BMA-East","39129737":"นายวันชัย วงษ์วาร|PA WW SP|BMA-East","39114132":"นางสาวเยาวลักษณ์ พงษ์ภมร|PA WW SP|BMA-East","39128143":"นางสาวนิฐิพร จันทอก|PA WW SP|BMA-East","39129522":"นายอนันต์ยศ กาญจนพันธุ์วงศ์|PA WW SP|BMA-East","39129524":"นายอนุชา อารีย์ป้อม|PA WW SP|BMA-East","39121947":"นายธงชัย ปุริมายตา|PA WW SP|BMA-East","39129526":"นายทิพปภา เข็มวงศ์ทอง|PA WW SP|BMA-East","39129545":"นายจักรพงษ์ ภิระคำ|PA WW SP|BMA-East","39129546":"นางสาวสุกัญญา จาดฮามรถ|PA WW SP|BMA-East","39129544":"นางสาวมีนา ชุมวัน|PA WW SP|BMA-East","39129525":"นายธเนตร แก้วปัดชา|PA WW SP|BMA-East","39129989":"นางสาวธิมาพร นวะพิฒ|PA WW SP|BMA-East","39129995":"นางสาวศรีสุดา เอมจิตร์|PA WW SP|BMA-East","39129996":"นางสาวเกศริน เที่ยงตรง|PA WW SP|BMA-East","39128144":"นางสาวอิสริยา ตูบไธสง|PA WW SP|BMA-East","39129515":"นางสาวลิ้มเพชร ลิ้มเจริญ|PA WW SP|BMA-East","39129516":"นายเอกสิทธิ์ ฤทธิรุตม์|PA WW SP|BMA-East","39129517":"นายพรเจตน์ วิไลรัตน์|PA WW SP|BMA-East","39129518":"นางสาวธัญวลัย ดิฟิดิ|PA WW SP|BMA-East","39129519":"นายขวัญ อมาตยกุล|PA WW SP|BMA-East","39129541":"นายโสภณ โกมล|PA WW SP|BMA-East","39129542":"นางสาววิจิตรา บุญธรรม|PA WW SP|BMA-East","39126423":"น.ส.ศศิประภา พรหมไหม|PA WW SP|BMA-East","39129990":"นางสาวชนิดาพร ศรีรักษา|PA WW SP|BMA-East","39130794":"นายอชิรวิชญ์ มิเขวา|PA WW SP|BMA-East","39129857":"นางสาวตุลยดา ชัยมี|PA WW SP|BMA-East","39130795":"นายศุภศิลป์ กองจำปา|PA WW SP|BMA-East","39130796":"นายจิรายุ จรรยาวัฒน์|PA WW SP|BMA-East","39130797":"นายอรรถพล ลีลาเลิศศุภกุล|PA WW SP|BMA-East","39128430":"นางสาวมุกธิดา โรดพาง|PA WW SP|BMA-East","39128431":"นางสาวพลอยพิศุทธิ์ ประยูรดารา|PA WW SP|BMA-East","39111514":"น.ส.ปิยะฉัตร เกิดพุ่ม|PA WW SP|BMA-East","39114557":"นายวรวุฒิ จันทร์เนียม|PA WW SP|BMA-East","39129841":"นางสาวนพัตธร โพธาภิวัฒน์|PA WW SP|BMA-East","39130798":"นายจีระพันธ์ สูนอ่อน|PA WW SP|BMA-East","39111869":"นางยุพิน การกล้า|PA WW SP|BMA-East","39114516":"น.ส.อริสรา วิเศษทอง|PA WW SP|BMA-East","39127880":"นางสาวสุธาสินี พงษ์ภักดี|PA WW SP|BMA-East","39128138":"นางสาววิลาวัณย์ จั่วทอง|PA WW SP|BMA-East","39127881":"นางสาวดวงกมล ยางเดิม|PA WW SP|BMA-East","39127882":"นางสาวอารีณัฐ ฉัตรกันภัย|PA WW SP|BMA-East","39129413":"นางสาวชัญญาพัชญ์ เหลืองทองเจริญ|PA WW SP|BMA-East","39129434":"นายจิรวัฒน์ อุบลศรี|PA WW SP|BMA-East","39129435":"นางสาวรัชนีวรรณ สุภัคเฉลิมวงศ์|PA WW SP|BMA-East","39129207":"น.ส.สุพิชชา กล่ำชม|PA WW SP|BMA-East","39129255":"น.ส.ฐานิดา งามบุญริด|PA WW SP|BMA-East","39129256":"นายธนชาติ ครองเวียง|PA WW SP|BMA-East","39129257":"น.ส.พิชญา ทองสัมฤทธิ์|PA WW SP|BMA-East","39114480":"นายนนทพัทธ์ ศิริมาศ|PA WW SP|BMA-East","39115642":"นายคณิตย์ บุญมา|PA WW SP|BMA-East","39133113":"นางราตรี ตางจงราช|PA WW SP|BMA-East","39110865":"น.ส.ศศิธร ชูชาติ|PA WW SP|BMA-East","39110866":"น.ส.อรดา ผลิดผล|PA WW SP|BMA-East","39110867":"นายธวัชชัย รุ่งระวี|PA WW SP|BMA-East","39111784":"น.ส.วิภาวี ขำนวม|PA WW SP|BMA-East","39111981":"น.ส.อรญา พราหมณ์บัวทอง|PA WW SP|BMA-East","39112027":"นายฉัตรจักร ชิดเอื้อ|PA WW SP|BMA-East","39112029":"น.ส.มัสยา ยานะรินทร์|PA WW SP|BMA-East","39112031":"นายนพรัตน์ พราหมณ์บัวทอง|PA WW SP|BMA-East","39114517":"นายสุวิทย์ สุวรักษร|PA WW SP|BMA-East","39129436":"นางสาวอรพรรณ พุทธพงษ์|PA WW SP|BMA-East","39129469":"นางสาววราพร ปั้นพึ่งบุญ|PA WW SP|BMA-East","39114502":"นายชัยวัฒน์ ศักดิ์ทรัพย์ทวี|PA WW SP|BMA-East","39130418":"นางสาวภัทราภรณ์ รักษ์มณี|PA WW SP|BMA-East","39130419":"นางสาวประนัดดา มูลทา|PA WW SP|BMA-East","39111718":"น.ส.ขนิษฐา พราหมณ์บัวทอง|PA WW SP|BMA-East","39121570":"น.ส.นิรันดร์ดา เบ้าแบบดี|PA WW SP|BMA-West","39128053":"น.ส.กนกพร ขุนติบรรเทิง|PA WW SP|BMA-West","39129123":"นายชาติชัย มีชัย|PA WW SP|BMA-West","39129551":"นายภาคภูมิ เมฆสุวรรณ|PA WW SP|BMA-West","39127957":"น.ส.ณิชชา ฐานธนวรกุล|PA WW SP|BMA-West","39130205":"นายธนัชชา ทศไธสง|PA WW SP|BMA-West","39130206":"นายสุธิพงศ์ เมฆสุวรรณ|PA WW SP|BMA-West","39130925":"นายพานทอง ส่องศรีโรจน์|PA WW SP|BMA-West","39131121":"นายพบพร เนียมท้วม|PA WW SP|BMA-West","39131122":"น.ส.อนิสสรา พันธุ์สอาด|PA WW SP|BMA-West","39119167":"นายเพชร บุญสาหร่าย|PA WW SP|BMA-West","39129252":"น.ส.ศิริวรรณ ศรลัมพ์|PA WW SP|BMA-West","39118972":"นายเจษฎากร กันบุตร|PA WW SP|BMA-West","39121571":"น.ส.กรองทอง พูลถนอม|PA WW SP|BMA-West","39121572":"น.ส.สุพรรษา พรมจันทร์|PA WW SP|BMA-West","39128641":"นายพิพัฒน์พงศ์ ทางรัตนสุวรรณ|PA WW SP|BMA-West","39129189":"น.ส.ศรัณย์รัชต์ นวกิจไพศานต์|PA WW SP|BMA-West","39132776":"น.ส.พนิตา แจ้งเจริญ|PA WW SP|BMA-West","39133112":"นายรัฐศักดิ์ กันบุตร|PA WW SP|BMA-West","39129178":"น.ส.จุฑามาศ สุขประจักษ์ทอง|PA WW SP|BMA-West","39114147":"น.ส.ทิพวรรณ พวงแก้ว|PA WW SP|BMA-West","39132777":"นางวรรนิภา อาวรณ์|PA WW SP|BMA-West","39132778":"นายเอกชัย เทศศรี|PA WW SP|BMA-West","39132779":"น.ส.ภาณุพรรณ แสงขำ|PA WW SP|BMA-West","39133111":"น.ส.น้ำค้าง นิยมปิยศิลป์|PA WW SP|BMA-West","39130286":"น.ส.จิราพร วอหา|PA WW SP|BMA-West","39130293":"น.ส.วาสนา เข็มขัด|PA WW SP|BMA-West","39115889":"นางชญานิษฐ์ เลิศคงคาทิพย์|PA WW SP|BMA-West","39129172":"น.ส.ธัญญ์นภัส วิริยภานุพัฒน์|PA WW SP|BMA-West","39129174":"น.ส.ทิฆัมพร เอกศิริธนเวทย์|PA WW SP|BMA-West","39119353":"น.ส.กฤตยา ศรีทา|PA WW SP|BMA-West","39129794":"นายมารุต สวนตะโก|PA WW SP|BMA-West","39111695":"น.ส.ประภาศรี แก้วคงคา|PA WW SP|BMA-West","39114455":"น.ส.ธิดารัตน์ พูลสวัสดิ์|PA WW SP|BMA-West","39129145":"น.ส.ขวัญจิรา อ่ำใหญ่|PA WW SP|BMA-West","39118311":"นายณภัทร รัตนมณี|PA WW SP|BMA-West","39127953":"นายวรพจน์ กฤษเชิด|PA WW SP|BMA-West","39127956":"นายสกล หอมชื่น|PA WW SP|BMA-West","39128103":"นายศุภโชค นครสุต|PA WW SP|BMA-West","39128814":"น.ส.ทัศณา บุญนะ|PA WW SP|BMA-West","39128815":"นายอิทธิกร ไฟเพ็ชร|PA WW SP|BMA-West","39128818":"น.ส.ธนพร อยู่ฤทธิ์|PA WW SP|BMA-West","39114199":"นายสิริภาส อินต๊ะวงศ์|PA WW SP|BMA-West","39129143":"นายวัชรินทร์ ปินป๋าน|PA WW SP|BMA-West","39129700":"นายภาณุวัฒน์ สุขสันติสุวรรณ|PA WW SP|BMA-West","39114119":"น.ส.ณัฐกฤตา เถาพิมาย|PA WW SP|BMA-West","39127783":"น.ส.คณัสนันท์ เถาพิมาย|PA WW SP|BMA-West","39127784":"นายธเณศ กลิ่นจำปา|PA WW SP|BMA-West","39127786":"น.ส.ประไพ กาลสมบัติ|PA WW SP|BMA-West","39111621":"นายกฤตภาส คำภีรบุตร|PA WW SP|BMA-West","39111856":"นายพีระพงศ์ พู่ระย้า|PA WW SP|BMA-West","39124012":"น.ส.ชลิดา พรมพา|PA WW SP|BMA-West","39124523":"น.ส.กรภัทร เมืองจินดา|PA WW SP|BMA-West","39128052":"นายเขมรัฐ บุตรดี|PA WW SP|BMA-West","39129548":"นายบุญนเรศ พรมมาอินทร์|PA WW SP|BMA-West","39129550":"นายเล็ก แก่นบุตรดี|PA WW SP|BMA-West","39130207":"น.ส.กันต์กวินตราญ์ ศรีวิลัย|PA WW SP|BMA-West","39130989":"นายสถาพร ประชุมสงค์|PA WW SP|BMA-West","39130990":"นางนิรันดร เหล่าผง|PA WW SP|BMA-West","39130992":"นางสาวฉัตรปวีณ์ ทองจรูญทรัพย์|PA WW SP|BMA-West","39128104":"นายศักดา เตชะอรุณ|PA WW SP|BMA-West","39128593":"นายสุรเชษฐ์ ศรีทอง|PA WW SP|BMA-West","39128594":"น.ส.รุ่งฤดี ปืนฮวน|PA WW SP|BMA-West","39129067":"น.ส.นภาพร พงศ์นิกร|PA WW SP|BMA-West","39130422":"นายสุรชัย พิมพ์ภาค|PA WW SP|BMA-West","39130423":"นายเอกภพ ปรางรินทร์|PA WW SP|BMA-West","39114102":"น.ส.เสาวณี อ่อนหยู|PA WW SP|BMA-West","39127820":"นายจักรกฤษ อินทวงษ์|PA WW SP|BMA-West","39121130":"นายณัฐพล คล้ายเจ๊ก|PA WW SP|Central-West","39125825":"น.ส.ภวรัญน์ เทศเจริญ|PA WW SP|Central-West","39132550":"นายศุภเวช พ่วงเกิด|PA WW SP|Central-West","39114705":"นายบัญชา ลินิฐฎา|PA WW SP|Central-West","39119813":"นางสาวสิรินทรา อำพันทอง|PA WW SP|Central-West","39119814":"นายจักรพันธ์ สิริกุลภาคย์|PA WW SP|Central-West","39128848":"นายวสันต์ ศรีทับทิม|PA WW SP|Central-West","39117788":"นายศุภชัย สำลี|PA WW SP|Central-West","39127954":"น.ส.นัฐชนก สิตธรณ์|PA WW SP|Central-West","39128819":"นายพงศธร กุลดิษฐ|PA WW SP|Central-West","39129126":"น.ส.วิสา ญาติดุษฎี|PA WW SP|Central-West","39129077":"นายอนุรักษ์ บุญช่วย|PA WW SP|Central-West","39131041":"นางนฤมล ไกรสิทธิ์|PA WW SP|Central-West","39132658":"นายธนโชติ หงษ์ทอง|PA WW SP|Central-West","39114454":"นายไพศาล สมเพียร|PA WW SP|Central-West","39119811":"นายจิรโชติ แรมไพร|PA WW SP|Central-West","39128849":"นายชนลธิต เกตุเหล็ก|PA WW SP|Central-West","39128960":"น.ส.ปภัสสร เขียวเกษม|PA WW SP|Central-West","39128961":"น.ส.น้องนภัส โฉมจันทร์|PA WW SP|Central-West","39128959":"นายอณุชา พุทธวัธจนะ|PA WW SP|Central-West","39131833":"นายเชิดฉัตร กลั่นความดี|PA WW SP|Central-West","39131834":"นายอดิเรก พยัคฆา|PA WW SP|Central-West","39119004":"นางสาวกิ่งแก้ว ประทุมมา|PA WW SP|Central-West","39127958":"นางสาวศิริมาภรณ์ ปุ่นยิ้ม|PA WW SP|Central-West","39131835":"น.ส.ทิพย์นรา แสงเล็ก|PA WW SP|Central-West","39131836":"น.ส.อังควรา สุขสว่าง|PA WW SP|Central-West","39125768":"นางสาววารินทร์ สิทธิสาริกิจ|PA WW SP|Central-West","39130360":"น.ส.ธารีรัตน์ สวรรค์ตรานนท์|PA WW SP|Central-West","39130424":"น.ส.อรอุมา โสมา|PA WW SP|Central-West","39114197":"นางสาวเพ็ญนภา กรงกระโทก|PA WW SP|Central-West","39120084":"นางสาวนรินทร์ณัฏฐ ขจรโภคินสกุล|PA WW SP|Central-West","39123202":"นางสาววิชยา เวชเพิ่ม|PA WW SP|Central-West","39131837":"นายยอดเพชร ช่วงชั้น|PA WW SP|Central-West","39115065":"นางสาวนิสาชล สารสำคัญ|PA WW SP|Central-West","39120083":"นางสาวสิรินันท์ ศรีเกตุ|PA WW SP|Central-West","39123200":"นางสาวกัญญารัตน์ ม่วงแก้ว|PA WW SP|Central-West","39123201":"นางสาวปัทมา โคตบุตร|PA WW SP|Central-West","39111068":"น.ส.วริษฐา อรุณวัฒน์|PA WW SP|Central-West","39111069":"น.ส.ปวีณา รุ่งสว่าง|PA WW SP|Central-West","39119630":"นางสาวแก้วลัดดา เย็นไธสง|PA WW SP|Central-West","39119631":"นางสาวสุริวิภา ด้วงพังเทียม|PA WW SP|Central-West","39119632":"นางสาวกนกพร กอแก้ว|PA WW SP|Central-West","39120374":"นายอุสมา ปุริเส|PA WW SP|Central-West","39126113":"นางสาววิจิตรา แซ่จง|PA WW SP|Central-West","39129009":"น.ส.จุฑามาศ เปลี่ยนน้อย|PA WW SP|Central-West","39114140":"นายชัยรัฐ ฉัตรพิชิตพงศ์|PA WW SP|East","39129552":"น.ส.สุวรรณา สารนารถ|PA WW SP|East","39129081":"น.ส.จิราพรรณ สารนารถ|PA WW SP|East","39130204":"น.ส.ณัฐนันท์ ใหญ่ผลสุข|PA WW SP|East","39130220":"น.ส.อรวรรณ หลวงชัย|PA WW SP|East","39119818":"น.ส.จิราพร อุดมทวีทรัพย์|PA WW SP|East","39114153":"น.ส.จรีลักษณ์ อุดมทวีทรัพย์|PA WW SP|East","39119987":"น.ส.วิภารัตน์ มีสมบัติ|PA WW SP|East","39120040":"น.ส.เมวดี ดวงพรม|PA WW SP|East","39128453":"น.ส.กาญจนา ไชยสิทธิ|PA WW SP|East","39129142":"น.ส.มยุรี สนิทกูล|PA WW SP|East","39129144":"น.ส.วริศรา พงพันนา|PA WW SP|East","39129146":"น.ส.วิชชุดา แก้วมาลา|PA WW SP|East","39129176":"น.ส.รัชฎา สิมจันทึก|PA WW SP|East","39132529":"นายกรวิชญ์ ตรีเนตร|PA WW SP|East","39119985":"นายธภัทร ชอบจิตธิภัทร|PA WW SP|East","39129139":"น.ส.ภัทริดา ทันเกตุ|PA WW SP|East","39129147":"นายศุภชัย จันทร์แย้ม|PA WW SP|East","39114518":"น.ส.ธัญจิรา ธนะกุลวรกิจ|PA WW SP|East","39119981":"นายพงษ์เทพ เรือนเงิน|PA WW SP|East","39120041":"นายพชรพล เรือนเงิน|PA WW SP|East","39128454":"น.ส.ณัฐธิดา พรศรีสิริศักดิ์|PA WW SP|East","39128485":"น.ส.นิตยา คำจริง|PA WW SP|East","39128486":"น.ส.นิศาชล บุญเพชร|PA WW SP|East","39128487":"นายสุรัตน์ หรุ่นโพธิ์|PA WW SP|East","39128526":"นายสำเริง สุขพินิจ|PA WW SP|East","39119984":"นายปณชัย สุขนาแซง|PA WW SP|East","39119988":"น.ส.วรรณภา กาเตื่อย|PA WW SP|East","39128455":"น.ส.เดือนเพ็ญ ศรีวงห์|PA WW SP|East","39128488":"นายปิยณัฐ มั่นคง|PA WW SP|East","39132531":"นายภูวนาท แปยอ|PA WW SP|East","39132532":"น.ส.กิตติรัตน์ โนนอิน|PA WW SP|East","39132690":"นายธีรพงษ์ แสนบุญลือ|PA WW SP|East","39114060":"นางสาวกมลชนก รัตนวิจิตร|PA WW SP|East","39128370":"นางสาวจุฑารัตน์ วงค์ละคร|PA WW SP|East","39128371":"น.ส.ไอรดา โสรัมภา|PA WW SP|East","39128372":"น.ส.น้ำอบ จันทร์หอม|PA WW SP|East","39128484":"น.ส.อารียา ผิวเหลือง|PA WW SP|East","39128489":"น.ส.มนพัทธ์ ไวยาประโคน|PA WW SP|East","39128452":"นายศิวกร บ่ายขุนทด|PA WW SP|East","39117759":"น.ส.พิกุล อานุภาพ|PA WW SP|East","39128434":"นายวุฒิชัย คำฉ่ำ|PA WW SP|East","39128450":"นายเกียรติศักดิ์ วงษ์วัฒนะ|PA WW SP|East","39128460":"น.ส.ลัดดาวัลย์ พงษ์โอสถ|PA WW SP|East","39128461":"นายทัตชญา สัมฤทธิ์|PA WW SP|East","39114136":"น.ส.แสงระวี วิไลลักษณ์|PA WW SP|East","39127732":"นางสาวณฐา กันธาหิรัญ|PA WW SP|North","39127876":"นางสาววีรินท์ ศรีธนวนันต์|PA WW SP|North","39127877":"นางสาวหทัยรัตน์ บุญมา|PA WW SP|North","39127879":"นายกิตติพัทธ์ ยองดี|PA WW SP|North","39128963":"นายนิชนันท์ ส่วนสวัสดิ์|PA WW SP|North","39128997":"นายกิตติกานต์ แสงทวี|PA WW SP|North","39129169":"นางสาวสุดาพร ขันป๊ก|PA WW SP|North","39129540":"นายณัฐธีร์ จันทร์วงค์|PA WW SP|North","39129735":"นางสาวศิริณทร์ทิพย์ แสงปัน|PA WW SP|North","39130362":"นายฤทธิไกร สมประสงค์|PA WW SP|North","39130391":"นางสาวชาลิสา แซ่จาง|PA WW SP|North","39130395":"นายชวนากร สาระติ|PA WW SP|North","39130746":"นายพงษ์ศิริ วัชรากร|PA WW SP|North","39130290":"นายณัฐวรรธ์ กิติวีระพงศ์|PA WW SP|North","39131771":"นายธนกฤต หนูวงคำ|PA WW SP|North","39131829":"นายโชติพัฒน์ บัวขาว|PA WW SP|North","39131830":"นางสาวอริสา ใบสันเทียะ|PA WW SP|North","39117082":"นางสาวชุติมา เส็งกลิ่น|PA WW SP|North","39117083":"นายภูริพัฒน์ ธิวรรณ์|PA WW SP|North","39117085":"นายระวิ เคียงวงศ์|PA WW SP|North","39117086":"นายสนิท แสนงาม|PA WW SP|North","39125040":"นางสาวประภัสสร คำทอง|PA WW SP|North","39125672":"นางสาวอรพันธ์ กาวาด|PA WW SP|North","39128970":"นางสาวนภัทร์ธมณฑ์ ศิริเดชพันธุ์|PA WW SP|North","39129122":"นายกิตติ์พิพัชญ์ แดงสุวรรณ|PA WW SP|North","39129793":"นายทรรศชล เขียววาสน์|PA WW SP|North","39130267":"นายอิทธิพัทธ์ ถานา|PA WW SP|North","39129168":"นางสาวพิมพ์ชญา ศรีถ้อย|PA WW SP|North","39131149":"นางสาวภคิณี แก้วหล้า|PA WW SP|North","39131770":"นางสาวเจนี่ จายก่ำ|PA WW SP|North","39131831":"นางสาวอชิรญา สุริยะ|PA WW SP|North","39133114":"นางสาวประกายพร ทวิชากรสีทอง|PA WW SP|North","39133115":"นายวงศกร อะตำมา|PA WW SP|North","39114495":"นายติณณภัทร์ ราวิชัย|PA WW SP|North","39119864":"นางสาวธัญญา แจ้งไพร|PA WW SP|North","39130741":"ว่าที่ ร.ต.อภิชิต ดอนชัย|PA WW SP|North","39130991":"นางสาววิภา หมื่นจี้|PA WW SP|North","39131832":"นายพุฒิกุล มหาราช|PA WW SP|North","39132219":"นายจิระศักดิ์ ปันเขื่อนขัติ|PA WW SP|North","39114493":"นายเกรียงไกร กะทาง|PA WW SP|North","39130358":"นายกิตติชัย เลเชกุ|PA WW SP|North","39130359":"นางสาวณัฎฐธิดา นามอินทร์|PA WW SP|North","39130420":"นางสาวณัฐณิชา ใจคำ|PA WW SP|North","39130742":"นางสาวธัญริกา โยต๊ะ|PA WW SP|North","39131043":"นางสาวณัฐสุดา เฉียบแหลม|PA WW SP|North","39132216":"นางสาวมนิภา วิสัยบูลย์|PA WW SP|North","39132217":"นายพิฆเนศ เร็วการ|PA WW SP|North","39115801":"นายอำนวย พิมพ์จันทร์|PA WW SP|North","39119889":"นางสาวนุชนาฎ มาดี|PA WW SP|North","39129173":"นางสาวพัชรินทร์ จิตติวรางกูล|PA WW SP|North","39118834":"นายปกรณ์ ทองสว่าง|PA WW SP|North","39130287":"นางสาวทิวาพร ศรีสุข|PA WW SP|North","39130203":"นางสาวฐิติมา มดเจริญ|PA WW SP|North","39129181":"นางอนุสรณ์ เพิ่มดี|PA WW SP|North","39129253":"นางสาวอัญชลี ดาดำ|PA WW SP|North","39130352":"นางสาวอรอุมา กุลานาม|PA WW SP|North","39127782":"นางสาวนิภาพร เปี้ยสุยะ|PA WW SP|North","39129180":"นายกิตติคุณ สุมณฑา|PA WW SP|North","39129520":"นางสาวพรนัชชา เมเฮ|PA WW SP|North","39129536":"นางสาวฤชาพรรณ จำปาอูป|PA WW SP|North","39131150":"นางสาววิไลพร เชื้อลอง|PA WW SP|North","39132656":"นางสาวรัฐยา คานสุวงศ์|PA WW SP|North","39111224":"นายไกรวุฒิ พิศดาร|PA WW FSP|North","39114590":"นายยุทธนา เพิ่มอุตสาห์|PA WW FSP|North","39115643":"นางสาววิภา เซ็นแก้ว|PA WW FSP|North","39129175":"นางสาวสุกัญญา มาตย์ภา|PA WW FSP|North","39129839":"นางสาวภัทราพร สวนมนิล|PA WW FSP|North","39131148":"นายธนพล พรมเสพสัก|PA WW FSP|North","39131838":"นางสาวทิพย์ธัญญา ปวนสิงห์|PA WW FSP|North","39127960":"นางสาวนันทพร คุ้มเนตร|PA WW SP|North","39127965":"นางสาวเปรมวิกา กุลสุสินธ์|PA WW SP|North","39128305":"นางสาววิจิตรา สิบน้อย|PA WW SP|North","39128816":"นายภูวดล อุ่นกาศ|PA WW SP|North","39128817":"นายวันชาติ ราชสงฆ์|PA WW SP|North","39129651":"นางสาววงค์เดือน สีเหลือง|PA WW SP|North","39130291":"นางสาวสุมลวรรณ ธิโนชัย|PA WW SP|North","39130288":"นางสาวภาณุมาศ ปัญญาเศรษฐ|PA WW SP|North","39132691":"นางสาววราตรี ทวีวรรณ|PA WW SP|North","39115644":"นางสาววรรณนิสา กันยาประสิทธิ์|PA WW SP|North","39115645":"นายพรพิชัย อินเหลือง|PA WW SP|North","39115646":"นายศรันธ์ ฉวีจันทร์|PA WW SP|North","39115647":"นายเจษฎา ออกสมจิต|PA WW SP|North","39116204":"นางสาวรัชนี พวงทับทิม|PA WW SP|North","39116435":"นายนที จันทคล|PA WW SP|North","39117787":"นางสาวศันสนี พ่อพิลา|PA WW SP|North","39119456":"นางสาวมนัสนันท์ โพธิ์เจริญ|PA WW SP|North","39119692":"นางสาวกรรณิการ์ โทเพชร|PA WW SP|North","39129375":"นางสาวธนิษฐ์นันท์ คงประพันธ์|PA WW SP|North","39130361":"นางสาวนัสนันท์ น้อยมี|PA WW SP|North","39130745":"นางสาวนัทธมน นาคประคอง|PA WW SP|North","39131839":"นางสาวกานต์สิณีย์ ยาวิชัย|PA WW SP|North","39132530":"นางสาวพาฝัน ทนงศิลป์|PA WW SP|North","39132534":"นางสาวเพียงนิล ธนะวิมลสิทธิ์|PA WW SP|North","39132655":"นางสาวหนึ่งฤทัย คำภีระ|PA WW SP|North","39132720":"นางสาวนันทพร พันมา|PA WW SP|North","39114500":"นางสาวมนต์รัก รอดทอง|PA WW SP|North","39119817":"นางสาวณภัทร สว่างจิตร|PA WW SP|North","39128916":"นายกฤติพงศ์ แก้วโพธิ์กลาง|PA WW SP|North","39129373":"นางสาววราพร บุญมา|PA WW SP|North","39129374":"นางสาวชลดา กันอยู่|PA WW SP|North","39126358":"นายภัทรพงศ์ สิมมา|PA WW SP|North","39129543":"นายบุญญฤทธิ์ กุศลธนสาร|PA WW SP|North","39129997":"นายธวัช ราชบุญมี|PA WW SP|North","39129998":"นางสาวนภัสวรรณ ดอนเรือนไพร|PA WW SP|North","39130292":"นางสาวนันทนา สุขเกษม|PA WW SP|North","39131042":"นางสาวกัลยรัตน์ ชมภูพื้น|PA WW SP|North","39132533":"นางสาวนงลักษณ์ แก้วตา|PA WW SP|North","39132693":"นายวันชนะ ดอนชาไพร|PA WW SP|North","39114491":"นายประยูร ศรีลา|PA WW SP|North","39119844":"นายวรายุทธ คุตจันทร์|PA WW SP|North","39120538":"นายนัฐพงษ์ อุ่นพา|PA WW SP|North","39128125":"นางสาวณฐพร ทานะขันธ์|PA WW SP|North","39114586":"นายสว่าง แสนอ่อน|PA WW SP|North","39130344":"นางสาวดารารัตน์ แพงไธสงค์|PA WW SP|North","39130345":"นายศิริสุข เหล่าสนธิ์|PA WW SP|North","39133548":"นางสาวเนืองนิตย์ จักรแก้ว|PA WW SP|North","39134059":"นางสาวธนัชพร สุนันต๊ะ|PA WW SP|North","39134060":"นางสาวขนิษฐา กองชุม|PA WW SP|North","39134061":"นางสาวภาณุมาศ แสงสัญญา|PA WW SP|North","39129412":"นายชาญวิทย์ กาลจักร์|PA WW SP|Northeast1","39114122":"น.ส.อารญา สีหนารถ|PA WW SP|Northeast1","39121591":"น.ส.รุ่งนภา มาวาลย์|PA WW SP|Northeast1","39129411":"น.ส.อาพัสรา ภูนาแวง|PA WW SP|Northeast1","39129798":"น.ส.อาทิตยา ภูมีวัตร์|PA WW SP|Northeast1","39114063":"นายพิทักษ์ พลเยี่ยม|PA WW SP|Northeast1","39121440":"น.ส.รัชดาพร ลาปะ|PA WW SP|Northeast1","39121441":"นายปัทม์ปริยฉัตร วงษ์กุดเลาะ|PA WW SP|Northeast1","39121469":"น.ส.จารุวรรณ พันเขียว|PA WW SP|Northeast1","39121470":"น.ส.จันทร์มณี จิตรโคตร|PA WW SP|Northeast1","39121471":"นายคมกริช แขมชัยภูมิ|PA WW SP|Northeast1","39122026":"น.ส.อรสา ฐานวิศัย|PA WW SP|Northeast1","39124939":"นายภานุเดช ยิ่งประเสริฐ|PA WW SP|Northeast1","39124940":"น.ส.พิชชาพร ศรีวงศ์ชัย|PA WW SP|Northeast1","39124941":"น.ส.เหมือนตะวัน สุดมั่งมี|PA WW SP|Northeast1","39120949":"นายมานิต กุมลา|PA WW SP|Northeast1","39120950":"น.ส.ศิริรัตน์ อุบลเลิศ|PA WW SP|Northeast1","39120951":"น.ส.ชุติมา ขานอยู่|PA WW SP|Northeast1","39120953":"นายสหภาพ อุบลเลิศ|PA WW SP|Northeast1","39123064":"น.ส.กัญญาภัค พิมโสม|PA WW SP|Northeast1","39123065":"นายธนารักษ์ เทียมพล|PA WW SP|Northeast1","39124265":"นายพิชิต จอมคำสิงห์|PA WW SP|Northeast1","39124266":"นายพัชรพงศ์ อันอาษา|PA WW SP|Northeast1","39124267":"น.ส.พัณณ์กานต์ หินแก้ว|PA WW SP|Northeast1","39124268":"นายณราวุฒิ สาศิริ|PA WW SP|Northeast1","39124269":"นายอนุชา บัวระภา|PA WW SP|Northeast1","39127193":"นายประยุทธ โพสาวัง|PA WW SP|Northeast1","39127408":"น.ส.พรพิตรา ทองทับ|PA WW SP|Northeast1","39130357":"น.ส.กรวรรณ บุญหล้า|PA WW SP|Northeast1","39114085":"น.ส.จิราพร พุดพิลา|PA WW SP|Northeast1","39124886":"นายไพบูลย์ อัคตะวงษา|PA WW SP|Northeast1","39124887":"นายคณิน นวลสวาท|PA WW SP|Northeast1","39124888":"นายวราผล สมจิตร|PA WW SP|Northeast1","39124889":"น.ส.สถาพร โสสีทา|PA WW SP|Northeast1","39125045":"นายโชคอนันต์ โพศรี|PA WW SP|Northeast1","39128267":"น.ส.รัตนาพร โพธิ์คำ|PA WW SP|Northeast1","39128277":"นายญาณวรุตม์ กำแพงนิล|PA WW SP|Northeast1","39128283":"น.ส.ผกาทิพย์ เที่ยงตรง|PA WW SP|Northeast1","39114100":"นางสาวอำภาภรณ์ วิจิตจันทร์|PA WW SP|Northeast2","39121011":"นายวสันต์ อารีเอื้อ|PA WW SP|Northeast2","39120709":"นายวีระยุทธ วุฒิจันทร์|PA WW SP|Northeast1","39128603":"นายโสภณวิชญ์ อินธิเสน|PA WW SP|Northeast1","39128823":"นายณัฐนนท์ บรรเทา|PA WW SP|Northeast1","39128921":"น.ส.จิราภรณ์ ศรีมี|PA WW SP|Northeast1","39116004":"นายวชิรวิทย์ คนซื่อ|PA WW SP|Northeast1","39120704":"น.ส.เกศรินทร์ จูโต|PA WW SP|Northeast1","39120705":"นายพัทรพงษ์ อังมีพิษ|PA WW SP|Northeast1","39120706":"นายขจรศักดิ์ วงค์คำจันทร์|PA WW SP|Northeast1","39120707":"น.ส.สาวิตรี ขันบรรจง|PA WW SP|Northeast1","39120710":"นายปิยทัศน์ แสนศิลา|PA WW SP|Northeast1","39128599":"น.ส.ปรียาภรณ์ รัตน์วิชัย|PA WW SP|Northeast1","39128822":"น.ส.นันทิยา เทาสี|PA WW SP|Northeast1","39128825":"น.ส.นลินทิพย์ บัวระบัดทอง|PA WW SP|Northeast1","39129138":"นายกนกชัย วงษ์สามารถ|PA WW SP|Northeast1","39114083":"น.ส.เฟื่องฟ้า ระมัดไทยสงค์|PA WW SP|Northeast1","39118604":"นายทนงศักดิ์ บุตรชารี|PA WW SP|Northeast1","39118605":"น.ส.พรพิมล พิทักษ์|PA WW SP|Northeast1","39121197":"นายองอาจ จันทร์หอม|PA WW SP|Northeast1","39121198":"นายปติภัทร ธิวรรณลักษณ์|PA WW SP|Northeast1","39121199":"น.ส.อัญชลี อินทรสิงห์|PA WW SP|Northeast1","39121206":"น.ส.ศศิภา ถาปัน|PA WW SP|Northeast1","39121207":"น.ส.นุสรา หงษ์ทอง|PA WW SP|Northeast1","39122632":"นายดนุโชติ ชัยมี|PA WW SP|Northeast1","39122633":"น.ส.อัญชลี พาป้อ|PA WW SP|Northeast1","39122634":"นายยุทธนา ธนูสา|PA WW SP|Northeast1","39124017":"นายวิทยา มานะวัฒนาวงศ์|PA WW SP|Northeast1","39116096":"น.ส.เจนจิรา เจริญมิตร|PA WW SP|Northeast1","39121205":"น.ส.วนิดา ฝาฤาคำ|PA WW SP|Northeast1","39129648":"น.ส.มุธิตา จำปาสิงห์|PA WW SP|Northeast1","39129649":"นายวีรชัย ทะวะดี|PA WW SP|Northeast1","39130421":"น.ส.กัลยาณี เจริญมิตร|PA WW SP|Northeast1","39129650":"น.ส.กรวิกา ทาต้อง|PA WW SP|Northeast1","39114154":"น.ส.จำปา พรมเอาะ|PA WW SP|Northeast2","39116006":"น.ส.ยุพา บัวผัน|PA WW SP|Northeast2","39121567":"น.ส.สุธาสินี คูณโปก|PA WW SP|Northeast2","39121568":"นายเคสณรงศักดิ์ โตรักษา|PA WW SP|Northeast2","39121569":"น.ส.นิตยา นะราชรัมย์|PA WW SP|Northeast2","39129369":"นายชัยวัฒน์ ค้ากลาง|PA WW SP|Northeast2","39130393":"น.ส.สุนันญา ศรีเข่ง|PA WW SP|Northeast2","39131040":"น.ส.อรอุมา ราชเหนือ|PA WW SP|Northeast2","39114101":"นายสันติ ใจภักดี|PA WW SP|Northeast2","39121559":"นายธรรมวิทย์ ธนาภิวัฒน์|PA WW SP|Northeast2","39121560":"น.ส.กรรณิกา อารีย์|PA WW SP|Northeast2","39121561":"น.ส.สมจิตร์ พินิจวงค์|PA WW SP|Northeast2","39121562":"น.ส.ธนาวรรณ ใสแจ่ม|PA WW SP|Northeast2","39110816":"นายกฤตวัชร์ รัตนชัยเดชา|PA WW SP|Northeast1","39110818":"นายศราวุธ เพชรบ่อแก|PA WW SP|Northeast1","39114118":"น.ส.ลภัสรดา นามบุตร|PA WW SP|Northeast1","39132773":"น.ส.นิ่มนวล สุคำภา|PA WW SP|Northeast1","39132774":"นายฐาปนะพงศ์ อันอาน|PA WW SP|Northeast1","39132775":"นายอริยพงษ์ ทวีทรัพย์|PA WW SP|Northeast1","39110919":"นายวิษณุ บุรวัฒน์|PA WW SP|Northeast2","39114099":"นายพิทักษ์ พลเยี่ยม|PA WW SP|Northeast2","39120600":"น.ส.ปัญจารีย์ ผมเพ็ชร|PA WW SP|Northeast2","39120601":"นายศราวุฒิ สารพัฒน์|PA WW SP|Northeast2","39120602":"นายวิเชษฐ ปะวะเข|PA WW SP|Northeast2","39120952":"น.ส.ชไมพร สารพัฒน์|PA WW SP|Northeast2","39120979":"น.ส.นิอรทิพย์ พลเยี่ยม|PA WW SP|Northeast2","39114506":"น.ส.สุดาพร ราชเหนือ|PA WW SP|Northeast2","39116520":"น.ส.พรหมภัสสรณ์ ราชาตัน|PA WW SP|Northeast2","39119939":"น.ส.นิตยา ภิรมย์ประเมศ|PA WW SP|Northeast2","39119982":"นายอรรถพล ฉิมณรงค์|PA WW SP|Northeast2","39119983":"นายคเชษฐ ภิรมย์ประเมศ|PA WW SP|Northeast2","39119986":"น.ส.นุจรี บันเพิงพฤกษ์|PA WW SP|Northeast2","39129004":"นายประชา ใจอ่อน|PA WW SP|Northeast2","39129005":"น.ส.วรากร ดุมภ์ใหม่|PA WW SP|Northeast2","39129006":"นายมนัสวิน วันคำ|PA WW SP|Northeast2","39129007":"นายสุริยกรณ์ ปิ่นฉิม|PA WW SP|Northeast2","39129008":"นายวรเจฎฐ์ ศรีวุทธิศาสตริน|PA WW SP|Northeast2","39130197":"นายนิเวชย์ บำรุงจิตร์|PA WW SP|Northeast2","39130198":"นายทวีทรัพย์ ขันติยมงคล|PA WW SP|Northeast2","39130199":"น.ส.นิภาพร ขัวนา|PA WW SP|Northeast2","39130200":"น.ส.จิตลัดดา เกิดมะเริง|PA WW SP|Northeast2","39130201":"นายสิทธิพล พลเยี่ยม|PA WW SP|Northeast2","39130202":"นายณัฎฐชัย แน่นหนา|PA WW SP|Northeast2","39114471":"น.ส.จิตโสภิณ ไกรนอก|PA WW SP|Northeast2","39119848":"นายวุฒิพงศ์ เต็งกิตติโชค|PA WW SP|Northeast2","39129068":"นายชาญณรงค์ วงศ์สุรินทร|PA WW SP|Northeast2","39129069":"น.ส.จุฑาทิพย์ ม่วงจั่น|PA WW SP|Northeast2","39129070":"น.ส.นันท์นภัส ธีรรัตน์พงษ์|PA WW SP|Northeast2","39129080":"น.ส.ปณิดา อินทร์พิมาย|PA WW SP|Northeast2","39129991":"นายอุเทน ตะเคียนเกลี้ยง|PA WW SP|Northeast2","39129992":"น.ส.ปวีณา เค้าเงื่อน|PA WW SP|Northeast2","39129993":"น.ส.วรรณวิไล ฝางแก้ว|PA WW SP|Northeast2","39131044":"นายวุฒิพงษ์ ทองวิจิตร|PA WW SP|Northeast2","39131045":"น.ส.สุชาดา หลักกล้า|PA WW SP|Northeast2","39111030":"นายบัญชา ปานะโปย|PA WW SP|Northeast2","39121563":"นายชายันต์ สิงคนิภา|PA WW SP|Northeast2","39121564":"น.ส.ภาวิณี สุกใส|PA WW SP|Northeast2","39121565":"นายฐานันต์ เพ็ชรพราว|PA WW SP|Northeast2","39121566":"น.ส.สายธารนภา แผ่นแก้ว|PA WW SP|Northeast2","39130394":"น.ส.เฟื่องฟ้า ดีพาชู|PA WW SP|Northeast2","39130792":"น.ส.วาลุกา มานุจำ|PA WW SP|Northeast2","39130793":"น.ส.สุภาวิดา ธัญรัตนากร|PA WW SP|Northeast2","39132772":"น.ส.นฤมล พูนศิริ|PA WW SP|Northeast2","39132780":"น.ส.พรรณวดี ชูชื่นบุญ|PA WW SP|Northeast2","39111156":"นายนภัส ธนาพร|PA WW FSP|Northeast2","39121204":"น.ส.อภิสรา พรมพุทธา|PA WW FSP|Northeast2","39121377":"นายพงศ์พิพัฒน์ ปัญญา|PA WW FSP|Northeast2","39111161":"นายอาทิตย์ มั่งคง|PA WW SP|Northeast2","39114095":"น.ส.ราตรี ทองมวล|PA WW SP|Northeast2","39128835":"นายสิฏิกาจนญ์ วัลณเกียรติ|PA WW SP|Northeast2","39128836":"น.ส.กนกพร สินเย็น|PA WW SP|Northeast2","39114053":"น.ส.อุบลรุ่ง โวหารลึก|PA WW SP|Northeast2","39121208":"นายวีระยุทธ มงคลวรกิจชัย|PA WW SP|Northeast2","39129368":"น.ส.พลอยลัดดา จำปานาค|PA WW SP|Northeast2","39129549":"นายจักรพงศ์ ระวีวรรณ|PA WW SP|Northeast2","39129994":"นายไชยเนตร แก้วสุวรรณ|PA WW SP|Northeast2","39129538":"น.ส.พรชิตา สุขอนันต์|PA WW SP|South","39128638":"น.ส.ศิริวรรณ จันทร์ใย|PA WW SP|South","39116903":"นายเอกอนันต์ วิชิต|PA WW SP|South","39114139":"น.ส.ศศิธร เกตุอัมพร|PA WW FSP|South","39121136":"น.ส.เกษร อาคะมา|PA WW FSP|South","39121138":"นายธนวุฒิ จิตบรรจง|PA WW FSP|South","39128824":"น.ส.กรรณิการ์ จิ๋วพัฒนกุล|PA WW FSP|South","39128831":"น.ส.ลักณ์ ชูเพ็ง|PA WW FSP|South","39128832":"น.ส.อาริษา จินวรรณ|PA WW FSP|South","39128833":"น.ส.อริสา สบูมาศ|PA WW FSP|South","39128834":"น.ส.รจนา ธงทวัชร์|PA WW FSP|South","39129124":"นายโผผิน ถวิลไพร|PA WW FSP|South","39129125":"น.ส.รัตติกร ปานเครือ|PA WW FSP|South","39129653":"นายศราวุธ มุ่งพรเจริญ|PA WW FSP|South","39130427":"น.ส.วริศรา เลิศกาล|PA WW FSP|South","39130428":"นายธวัฒชัย พิมพ์ศร|PA WW FSP|South","39129066":"น.ส.อารียา เปาะแมรีซอ|PA WW SP|South","39114072":"นายสิทธิชัย โดยดี|PA WW SP|South","39129000":"น.ส.มัสลิน วงศ์ประชา|PA WW SP|South","39129001":"น.ส.สุไรยา สะมะแอ|PA WW SP|South","39128999":"นายเตาเปก มีสู|PA WW SP|South","39129071":"น.ส.รุสซีตา อารง|PA WW SP|South","39129072":"น.ส.วาฮีย๊ะห์ มามะ|PA WW SP|South","39128995":"น.ส.ซัลวา ดือรอแม|PA WW SP|South","39128998":"น.ส.ซูฮานา อูเซ็ง|PA WW SP|South","39129002":"น.ส.อัจฉรา แวดือราแม|PA WW SP|South","39114068":"น.ส.นูรูลฮัสมีดา นิเดร์|PA WW SP|South","39129698":"น.ส.คอรีฟะ สะสะ|PA WW SP|South","39129699":"น.ส.ฟาตือนี ดือเร๊ะ|PA WW SP|South","39128828":"น.ส.นิฟาตี เปาะเมาะยา|PA WW SP|South","39128829":"น.ส.มูรณีย์ ปูเตะ|PA WW SP|South","39114033":"น.ส.ณัฐธิดา โสยดี|PA WW SP|South","39129539":"น.ส.สุรัยยา แคยิหวา|PA WW SP|South","39125150":"นายวรรณพงษ์ ผลมาก|PA WW SP|South","39128458":"นายชนิลธรณ์ อ่อนแก้ว|PA WW SP|South","39128459":"นายปรีชา สุขชิน|PA WW SP|South","39130926":"น.ส.กันติชา ศรีสุชนม์|PA WW SP|South","39130927":"น.ส.ชุติมา ทองสร้อย|PA WW SP|South","39130937":"น.ส.อรทัย ใจชัยภูมิ|PA WW SP|South","39131151":"น.ส.กฤษณา มันแดง|PA WW SP|South","39132549":"นายณัฐศานติ์ ศานติประพันธ์|PA WW SP|South","39114623":"น.ส.เพชราวรรณ ทองขาว|PA WW SP|South","39129466":"นายกิตติชัย สังขรัตนพันธ์|PA WW SP|South","39129467":"นายสมโภชน์ สุ่นสา|PA WW SP|South","39129468":"น.ส.ฮูดา คาเว|PA WW SP|South","39114892":"น.ส.ชยพร กันเทพา|PA WW SP|South","39128224":"นางปุญญิศา สิงห์พรหม|PA WW SP|South","39128225":"น.ส.ยารีณา หลงสลำ|PA WW SP|South","39128228":"น.ส.กุลณิภากร เจะดือเระ|PA WW SP|South","39128229":"น.ส.ชฎาพร เทพทอง|PA WW SP|South","39128230":"น.ส.ชัญญา สุวรรณรัตน์|PA WW SP|South","39124798":"น.ส.สุทธิวดี รอดด้วน|PA WW SP|South","39129439":"น.ส.อรพิน จันทร์บัว|PA WW SP|South","39129440":"นายอภินันท์ เกษตรสมบูรณ์|PA WW SP|South","39129441":"น.ส.กาญจนา รอดด้วน|PA WW SP|South","39129534":"น.ส.อาทิตยา ทะคะลิง|PA WW SP|South","39129535":"น.ส.ชนากานต์ อ่อนอุ่น|PA WW SP|South","39129547":"นายอดิชาติ เกษตรสมบูรณ์|PA WW SP|South","39130196":"น.ส.วรานันท์ ดำชื่น|PA WW SP|South","39132694":"นายภัทรเดช อัคลา|PA WW SP|South","39114470":"น.ส.กชพร อินทร์ยิ้ม|PA WW SP|South","39128451":"น.ส.จตุพร อรัญ|PA WW SP|South","39128637":"นางสาวเมวิกา สังข์แก้ว|PA WW SP|South","39114558":"น.ส.จริยาภร แสวงศิลป์|PA WW SP|South","39128830":"น.ส.สุจิตรา แสวงศิลป์|PA WW SP|South","39130995":"น.ส.ปริชาติ ทองจันทร์แก้ว|PA WW SP|South","39114034":"นายต่อพงษ์ หาญวรศาสตร์|PA WW SP|South","39128457":"น.ส.จุฑามาศ บัวแก้ว|PA WW SP|South","39128639":"น.ส.ชาติชาย แก้วบรรจง|PA WW SP|South","39128640":"นางสุมาลิน ว่องย่อง|PA WW SP|South","39129372":"น.ส.ระวีวรรณ ขำขาล|PA WW SP|South","39129537":"นายวีระยุทธ โรจน์บำรุง|PA WW SP|South","39114128":"นายณัฐวุฒิ ยิ้มเซ่ง|PA WW SP|South","39120605":"นางลัคณา บัวแก้ว|PA WW SP|South","39120606":"น.ส.กฤษณา แกล้วทนงค์|PA WW SP|South","39120607":"น.ส.เรวดี บัวเนี่ยว|PA WW SP|South","39120608":"น.ส.สุวนันท์ พลคง|PA WW SP|South","39120609":"น.ส.จุฬาลักษณ์ ด้วงหวัง|PA WW SP|South","39128597":"น.ส.ณัฐธนิสชา สุกแก้วณรงค์|PA WW SP|South","39128598":"น.ส.กลิ่นผกา จันทร์โอ|PA WW SP|South","39120604":"นางสาวขนิษฐา แก้วคงธรรม|PA WW SP|South","39114134":"น.ส.จริญญา เยาว์แสง|PA WW SP|South","39120603":"น.ส.เพชรทร เห้งสีป้อง|PA WW SP|South","39120703":"นายอนุสรณ์ ธนูศิลป์|PA WW SP|South","39129654":"น.ส.จันทร์จิรา รัตนะ|PA WW SP|South","39129140":"นายพงศธร พิมพ์คุณากร|PA WW SP|BMA-West","39129141":"น.ส.ดุศิตา เกษนิษกิจ|PA WW SP|BMA-West"};
+let CURRENT=null;
+function doLogin(){
+  const u=(document.getElementById('lg-user').value||'').trim();
+  const p=document.getElementById('lg-pass').value||'';
+  const err=document.getElementById('lg-err');
+  if(!STAFF[u]){err.textContent='ไม่พบรหัสพนักงานนี้ในระบบ กรุณาตรวจสอบ Sale Code';err.style.display='block';return;}
+  if(p!=='trueyou1234'){err.textContent='รหัสผ่านไม่ถูกต้อง';err.style.display='block';return;}
+  const parts=STAFF[u].split('|');CURRENT={code:u,name:parts[0],typ:parts[1]||'',reg:parts[2]||''};
+  document.getElementById('login-ov').style.display='none';
+  document.getElementById('sess-name').textContent=parts[0]+' · '+u+(parts[1]?(' · '+parts[1]):'');
+  renderWatermark();
+}
+function renderWatermark(){
+  const wm=document.getElementById('wm');
+  const d=new Date();
+  const ds=('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+String(d.getFullYear()+543).slice(-2)+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+  const txt=CURRENT.code+' · '+CURRENT.name+' · '+ds;
+  let h='';for(let i=0;i<170;i++)h+='<span>'+txt+'</span>';
+  wm.innerHTML=h;wm.style.display='flex';
+}
+function logout(){location.reload();}
+document.addEventListener('keydown',function(e){var ov=document.getElementById('login-ov');if(e.key==='Enter'&&ov&&ov.style.display!=='none')doLogin();});
+
+/* ============ PACKAGES ============ */
+const PACKAGES={
+  value500:{name:"ทรูไฟเบอร์ 500/500 (Mass)",down:500,up:500,price:499,normal:928,ct:"24 ด.",mkt:"FTA44-500",fam:"value",desc:"เน็ต 500/500 · เราเตอร์ WiFi 6",hl:"เน็ต 500/500 คุ้มที่สุด · ฟรีค่าติดตั้ง"},
+  speed1g500:{name:"ทรูไฟเบอร์ 1000/500",down:1000,up:500,price:599,normal:1000,ct:"24 ด.",mkt:"FTA81-1000",fam:"value",desc:"ดาวน์โหลด 1Gbps · WiFi 6",hl:"ดาวน์โหลด 1Gbps ราคาเบา"},
+  speed1g1g:{name:"ทรูไฟเบอร์ 1000/1000",down:1000,up:1000,price:759,normal:1000,ct:"24 ด.",mkt:"FTA159-1000",fam:"speed",desc:"อัปโหลดเต็ม 1Gbps",hl:"อัปโหลดเต็ม 1Gbps เหมาะ WFH/ครีเอเตอร์"},
+  proai1g:{name:"PRO AI WiFi 7 · 1Gbps",down:1000,up:1000,price:799,normal:997,ct:"24 ด.",mkt:"FTA179-1000",fam:"proai",desc:"WiFi 7 AI + Mesh 1 จุด",hl:"เราเตอร์ WiFi 7 AI (มูลค่าหลักหมื่น) แถมฟรี + Mesh"},
+  proai15g:{name:"PRO AI WiFi 7 · 1.5Gbps",down:1500,up:1000,price:1299,normal:1499,ct:"24 ด.",mkt:"FTOT441-1500",fam:"proai",desc:"1.5Gbps + ซิม 20GB + iQIYI/viu + Mesh 1",hl:"1.5Gbps + ซิม 20GB + คอนเทนต์ + Mesh"},
+  proai2g:{name:"PRO AI WiFi 7 · 2Gbps",down:2000,up:1000,price:1399,normal:1599,ct:"24 ด.",mkt:"FTOT441-2000",fam:"proai",desc:"2Gbps + ซิม 20GB + NOW/iQIYI/viu + F-Secure",hl:"แรงสุด 2Gbps + ซิม 20GB + คอนเทนต์ + F-Secure"},
+  fttr899:{name:"Fiber to Room · 2 ห้อง",down:1000,up:1000,price:899,normal:1099,ct:"24 ด.",mkt:"FTR19-1000",fam:"fttr",desc:"ไฟเบอร์ทุกห้อง · Mesh 1 จุด",hl:"ไฟเบอร์เข้าทุกห้อง 1Gbps เท่ากันทั้งบ้าน"},
+  fttr1199:{name:"Fiber to Room · 3 ห้อง",down:1000,up:1000,price:1199,normal:1399,ct:"24 ด.",mkt:"FTR20-1000",fam:"fttr",desc:"ไฟเบอร์ทุกห้อง · Mesh 2 จุด",hl:"ไฟเบอร์ทุกห้อง 3 ห้อง · Mesh 2 จุด"},
+  fttr1499:{name:"Fiber to Room · 4 ห้อง",down:1000,up:1000,price:1499,normal:1699,ct:"24 ด.",mkt:"FTR21-1000",fam:"fttr",desc:"Mesh 3 + กล่อง + iQIYI + YouTube",hl:"ไฟเบอร์ 4 ห้อง + กล่อง + iQIYI + YouTube"},
+  fttr1799:{name:"Fiber to Room · 5 ห้อง",down:1000,up:1000,price:1799,normal:1999,ct:"24 ด.",mkt:"FTR22-1000",fam:"fttr",desc:"Mesh 4 + กล่อง + iQIYI + YouTube",hl:"บ้านใหญ่ 5 ห้อง ไฟเบอร์เต็มทุกจุด"},
+  asianseries:{name:"Asian Series + กล่อง TrueID",down:500,up:500,price:600,normal:600,ct:"24 ด.",mkt:"FTOT564-500",fam:"ent",desc:"viu + iQIYI 24 ด. + กล่อง TrueID",hl:"กล่อง TrueID + viu + iQIYI คุ้มสายซีรีส์"},
+  youtube:{name:"YouTube Premium + กล่อง",down:500,up:500,price:799,normal:799,ct:"24 ด.",mkt:"FTOT409-500",fam:"ent",desc:"YouTube Premium/Music + iQIYI + กล่อง",hl:"YouTube Premium/Music ไม่มีโฆษณา + iQIYI"},
+  netflix_std:{name:"Super Netflix (Standard)",down:500,up:500,price:899,normal:1099,ct:"24 ด.",mkt:"FTOT422-500",fam:"netflix",desc:"Netflix Standard + TrueID+ + iQIYI + กล่อง",hl:"Netflix + TrueID+ + iQIYI รวมบิลเดียว"},
+  netflix_prem:{name:"Super Netflix (Premium)",down:500,up:500,price:1099,normal:1299,ct:"24 ด.",mkt:"FTOT421-500",fam:"netflix",desc:"Netflix Premium 4K + TrueID+ + iQIYI + กล่อง",hl:"Netflix 4K Premium + TrueID+ + iQIYI"},
+  combomax699:{name:"Combo Max 699",down:500,up:500,price:699,normal:928,ct:"24 ด.",mkt:"FTTS266-500",fam:"combo",desc:"ซิม 40GB+โทร100 + viu",hl:"เน็ตบ้าน + ซิม 40GB + โทร 100 นาที จบในตัว"},
+  combomax799:{name:"Combo Max 799",down:500,up:500,price:799,normal:1098,ct:"24 ด.",mkt:"FTTS203-500",fam:"combo",desc:"ซิม 50GB+โทร250 + คูปอง 7-11 + viu",hl:"เน็ต + ซิม 50GB + โทร 250 + คูปอง 7-11"},
+  combomax899:{name:"Combo Max 899",down:1000,up:500,price:899,normal:1248,ct:"24 ด.",mkt:"FTTS203-1000",fam:"combo",desc:"ซิม 50GB+โทร250 + คูปอง 7-11 + iQIYI",hl:"1000/500 + ซิม 50GB + โทร 250 + คูปอง 7-11"},
+  safety579:{name:"Safety Package 579",down:500,up:500,price:579,normal:820,ct:"24 ด.",mkt:"FTA228-500",fam:"safety",desc:"CCTV 1 ตัว + ปุ่ม SOS",hl:"กล้อง 1 + ปุ่ม SOS ดูแลบ้าน ราคาเบา"},
+  safety799:{name:"Safety Package 799",down:1000,up:500,price:799,normal:1099,ct:"24 ด.",mkt:"FTA180-1000",fam:"safety",desc:"CCTV 2 + IoT + ประกันบ้าน + F-Secure",hl:"กล้อง 2 + IoT + ประกันบ้าน + F-Secure"},
+  cctvlcd:{name:"Security CCTV LCD (จอสัมผัส)",down:500,up:500,price:650,normal:850,ct:"24 ด.",mkt:"FTTS183-500",fam:"cctv",desc:"กล้องจอสัมผัส/วิดีโอคอล + ประกันอัคคีภัย",hl:"กล้องจอสัมผัส/วิดีโอคอล + ประกันอัคคีภัย"},
+  dongle:{name:"Hybrid Router (Fiber + 4G)",down:500,up:500,price:599,normal:799,ct:"24 ด.",mkt:"FTA119-500",fam:"dongle",desc:"เราเตอร์ + Dongle 4G สำรอง + ประกัน",hl:"ไฟเบอร์ + 4G สำรอง สลับอัตโนมัติ ไม่สะดุด"}
+};
+
+const SEGMENTS={
+  nt:{icon:"🔴",title:"NT Replacement — ลูกค้าย้ายจาก NT",
+    promos:[{price:520,normal:928,name:"True Online ย้ายค่าย NT",spec:"500/500 หรือ 300/300 · ซิม 40GB + โทร 100 นาที 24 ด. (เดือน 25+ เหลือ 20GB)",mkt:"FTTS297-500 / -300"}],
+    highlight:"รวมซิมมือถือในตัว · เลือกเบอร์ใหม่ หรือย้ายเบอร์เดิม (MNP) · เน็ตฟรี 40GB · Speed 500/500 Mb",
+    hooks:[{label:"เปิดการขาย — คำนวณค่าใช้จ่ายรวม",text:"สวัสดีครับ ไม่ทราบว่าทุกวันนี้คุณพี่จ่ายค่าน้ำ ค่าไฟ ค่าเน็ต ค่ามือถือ รวมกันต่อเดือนเท่าไหร่นะครับ — ถ้าผมช่วยคำนวณให้เห็นภาพชัด ๆ ว่าย้ายมา True แล้วต่างกันเท่าไหร่ พี่สะดวกให้ผมลองเปรียบเทียบให้ไหมครับ"}],
+    rec:"ย้ายจาก NT มา True เพียง 520 บาท (ปกติ 928) ได้เน็ต 500/500 + ซิมมือถือ 40GB โทรฟรี 100 นาที คุ้มกว่าที่ใช้อยู่เยอะครับ",
+    docs:["ใบแจ้งหนี้ NT ตัวจริง 4 สี ย้อนหลังไม่เกิน 3 เดือน","เฉพาะเปิดเบอร์ใหม่ (NEW) หรือย้ายเบอร์เดิม (MNP)","ที่อยู่ติดตั้งตรงกับใบแจ้งหนี้ NT"]},
+  switch:{icon:"🔁",title:"โปรย้ายค่าย — ค่ายอื่น (AIS / 3BB / อื่นๆ)",
+    promos:[
+      {price:569,normal:667,name:"ย้ายค่าย + กล้อง CCTV 2 ตัว",spec:"500/500 หรือ 300/300 · CCTV 2 ตัว + Cloud",mkt:"FTA192-500 / -300"},
+      {price:520,normal:598,name:"ย้ายค่าย + กล้อง CCTV 1 ตัว",spec:"500/500 หรือ 300/300 · CCTV 1 ตัว + Cloud",mkt:"FTA191-500 / -300"},
+      {price:569,normal:618,name:"ย้ายค่าย + เอมี่ (TrueX Home Hub)",spec:"500/500 · TrueX Home Hub + Ami",mkt:"FTA233-500 / -300"}],
+    highlight:"ราคาย้ายค่ายพิเศษ + แถมกล้อง CCTV / เอมี่ · ฟรีค่าแรกเข้า (Reason 52)",
+    hooks:[{label:"เปิดการขาย — ความเสถียร",text:"ลูกค้าหลายบ้านในละแวกนี้ย้ายมาเพราะเรื่องความเสถียรของสัญญาณครับ ไม่ทราบว่าพี่เคยเจอปัญหาแบบนี้บ้างไหม — ตอนนี้ที่ใช้อยู่ มีอะไรที่อยากให้ดีขึ้นบ้างไหมครับ"}],
+    rec:"ย้ายค่ายมา True ราคาพิเศษเริ่ม 520 บาท แถมกล้อง CCTV ดูบ้านผ่านมือถือ ฟรีค่าติดตั้งครับ",
+    docs:["ใบแจ้งหนี้/สลิป/หน้าแอปค่ายเดิม ย้อนหลังไม่เกิน 3 เดือน","ย้ายค่าย (MNP) หรือเปิดใหม่","ที่อยู่ตรงกับที่ติดตั้ง"]},
+  flood:{icon:"🌊",title:"พื้นที่เสี่ยงภัย — Security Campaign (โปรประกัน)",
+    promos:[
+      {price:678,name:"MY PLAN SAFE HOME",spec:"500/500 Mbps · CCTV + Cloud · ประกันภัยบ้าน คุ้มครองนาน 24 เดือน",mkt:"MY PLAN SAFE HOME"},
+      {price:650,name:"Security CCTV LCD + ประกันอัคคีภัย",spec:"500/500 · กล้องจอสัมผัส/วิดีโอคอล · ประกัน 450k/50k/5k",mkt:"FTTS183-500"}],
+    highlight:"ประหยัดค่าประกัน! ซื้อประกันแยกเอง ≈ 2,400–4,800 บาท · กับ True Online ประหยัดกว่า ≈ 1,680–4,080 บาท",
+    hooks:[
+      {label:"เปิดการขาย — น้ำท่วม",text:"สวัสดีครับพี่ ช่วงที่ผ่านมาแถวนี้ได้รับผลกระทบจากน้ำท่วมพอสมควร ไม่ทราบว่าบ้านพี่ได้รับผลกระทบมากน้อยแค่ไหนครับ"},
+      {label:"เปิดการขาย — ไฟไหม้",text:"คุณพี่เห็นข่าวไฟไหม้ไหมครับ ไม่ทราบว่าบ้านพี่มีการเตรียมแผนหรือความคุ้มครองเรื่องทรัพย์สินไว้บ้างหรือยังครับ"}],
+    rec:"แพ็กนี้ได้ทั้งเน็ต กล้อง และประกันภัยบ้านในตัว คุ้มครองบ้านช่วงเสี่ยงภัย ประหยัดกว่าซื้อประกันแยกหลายพันบาทครับ",
+    docs:[]},
+  security:{icon:"🛡️",title:"IoT & Security — เน้นกล้อง / ผู้สูงอายุ / ร้านค้า",
+    promos:[
+      {price:598,name:"เน้นกล้องปลอดภัย",spec:"500/500 Mbps · CCTV 1 ตัว พร้อม Cloud ดูย้อนหลัง 7 วัน",mkt:"—"},
+      {price:579,name:"ดูแลผู้สูงอายุ (SOS) — เริ่ม 12/6",spec:"500/500 หรือ 300/300 · Smart Home Router · CCTV 1 + Cloud 7 วัน · ปุ่มฉุกเฉิน 1 ตัว",mkt:"FTA228-500 / -300"},
+      {price:799,name:"Safety Package (จัดเต็ม)",spec:"1000/500 · CCTV 2 + IoT + ประกันบ้าน + F-Secure",mkt:"FTA180-1000"}],
+    highlight:"กล้อง + Cloud + ปุ่ม SOS ดูแลคนที่บ้าน · เริ่มเพียง 579–598 บาท",
+    hooks:[
+      {label:"เปิดการขาย — ผู้สูงอายุ (SOS)",text:"เวลาพี่ออกไปทำงาน เคยแอบกังวลไหมครับ ว่าถ้าคุณพ่อคุณแม่ล้มหรือเกิดเหตุฉุกเฉิน จะไม่มีคนรู้ทันที"},
+      {label:"เปิดการขาย — ร้านค้า",text:"คุณพี่ครับ ที่ร้านได้ลองทำคอนเทนต์ลง TikTok บ้างไหมครับ เดี๋ยวนี้คนทำคลิปจากกล้องวงจรปิดดังมากเลย — แล้วช่วงนี้มิจฉาชีพก็เยอะ ทั้งสลิปปลอม หยิบของแล้วเดินออกไป พี่เคยเจอเหตุการณ์แบบนี้ไหมครับ"}],
+    rec:"ติดกล้อง + ปุ่ม SOS ดูแลคนที่บ้านผ่านมือถือได้ตลอด เริ่มเพียง 579 บาทครับ ร้านค้าก็ดูของ ดูพนักงานได้จากมือถือ",
+    docs:[]}
+};
+
+const OPTIONS=[
+  {id:"wfh",e:"💻",l:"WFH / ประชุม",sec:"need",p:{speed1g1g:3,proai1g:2,speed1g500:2,dongle:1},r:"งาน WFH ต้องการ <b>อัปโหลดสูง</b>"},
+  {id:"gaming",e:"🎮",l:"เล่นเกม / eSports",sec:"need",p:{proai1g:3,proai15g:3,proai2g:2,speed1g1g:1},r:"สายเกมต้องการ <b>ping ต่ำ</b> WiFi 7 AI"},
+  {id:"stream",e:"🍿",l:"ดูหนัง/ซีรีส์ (สตรีมมิง)",sec:"need",p:{asianseries:2,youtube:2,netflix_std:3,netflix_prem:2,combomax699:1},r:"ดูสตรีมมิงบ่อย พ่วงคอนเทนต์คุ้มกว่า"},
+  {id:"sports",e:"⚽",l:"ดูบอล / กีฬา",sec:"need",p:{combomax899:1,combomax799:1},r:"สายบอล — NOW ENT / TrueVisions"},
+  {id:"creator",e:"🎥",l:"ไลฟ์สด / สตรีมเมอร์",sec:"need",p:{speed1g1g:3,proai15g:2,youtube:1},r:"ไลฟ์/อัปคลิปต้องการ <b>อัปโหลด 1Gbps</b>"},
+  {id:"pet",e:"🐾",l:"เลี้ยง / รักสัตว์เลี้ยง",sec:"need",p:{cctvlcd:2,safety579:1,safety799:1},r:"เลี้ยงสัตว์ — <b>AI Pet Care</b> ดูแล 24 ชม."},
+  {id:"elderly",e:"👵",l:"มีผู้สูงอายุ/เด็กที่บ้าน",sec:"need",p:{safety799:2,cctvlcd:2,safety579:1},r:"มีคนอยู่บ้านทั้งวัน — Ami + กล้อง"},
+  {id:"security",e:"🛡️",l:"ห่วงความปลอดภัย / อยากได้กล้อง",sec:"need",p:{safety799:3,safety579:2,cctvlcd:2},r:"เน้นปลอดภัย — CCTV + ประกันบ้าน"},
+  {id:"general",e:"🌐",l:"ใช้ทั่วไป โซเชียล",sec:"need",p:{value500:3,speed1g500:1},r:"ใช้ทั่วไป 500Mbps เพียงพอ คุ้มสุด"},
+  {id:"biz",e:"🏢",l:"ทำธุรกิจ / หน้าร้าน",sec:"need",p:{proai2g:2,dongle:1,safety799:1},r:"ธุรกิจต้องการเน็ต <b>เสถียร</b> + กล้อง"},
+  {id:"moo",e:"🔮",l:"สายมู อยากได้เบอร์มงคล",sec:"need",p:{combomax699:2,combomax799:2,combomax899:1},r:"Combo Max เลือกเบอร์มงคลได้"},
+  {id:"budget",e:"💰",l:"เน้นประหยัด",sec:"need",p:{value500:3,safety579:1},r:"เน้นงบ — แพ็กเข้าถึงง่ายก่อน"},
+  {id:"sim",e:"📱",l:"อยากได้ซิมมือถือด้วย",sec:"need",p:{combomax699:2,combomax799:2,combomax899:2},r:"อยากได้ซิม — Combo Max คุ้มสุด"},
+  {id:"u_alone",e:"🧍",l:"อยู่คนเดียว",sec:"users",grp:"users",p:{value500:2},r:"ผู้ใช้คนเดียว 500Mbps พอ"},
+  {id:"u_couple",e:"🧑‍🤝‍🧑",l:"2 คน",sec:"users",grp:"users",p:{value500:1,speed1g500:1},r:"ใช้ 2 คน แพ็กมาตรฐานพอ"},
+  {id:"u_family",e:"👨‍👩‍👧",l:"ทั้งครอบครัว",sec:"users",grp:"users",p:{speed1g1g:2,proai1g:1,netflix_prem:1,fttr1199:1},r:"ทั้งครอบครัว — 1Gbps ขึ้นไป"},
+  {id:"u_many",e:"👥",l:"บ้านคนเยอะ (6+)",sec:"users",grp:"users",p:{proai2g:3,fttr1499:2,fttr1799:2,proai15g:1},r:"คนเยอะ — ต้องการแบนด์วิดท์สูง"},
+  {id:"b1",l:"≤ 699",sec:"budget",grp:"budget",band:[0,699],p:{}},
+  {id:"b2",l:"700–999",sec:"budget",grp:"budget",band:[700,999],p:{}},
+  {id:"b3",l:"1,000–1,399",sec:"budget",grp:"budget",band:[1000,1399],p:{}},
+  {id:"b4",l:"1,400 ขึ้นไป",sec:"budget",grp:"budget",band:[1400,99999],p:{}},
+  {id:"multifloor",e:"🏡",l:"บ้านหลายชั้น / พื้นที่กว้าง",sec:"home",p:{fttr899:3,fttr1199:2,fttr1499:1},r:"บ้านหลายชั้น — FTTR ยิงทุกห้อง"},
+  {id:"deadzone",e:"📶",l:"ลูกค้าบ่นว่าสัญญาณไม่ทั่ว",sec:"home",p:{fttr899:3,dongle:1},r:"มีจุดอับ — FTTR/Mesh แก้ตรงจุด"}
+];
+const NEED_LABEL={};OPTIONS.forEach(o=>NEED_LABEL[o.id]=o.l.replace(/ *\(.*?\)/,""));
+const QUICKNOTES=["งบยืดได้ถ้าของครบ","เลี้ยงสัตว์","อยากได้ซิมด้วย","ห่วงพ่อแม่","อยากได้เบอร์มงคล"];
+
+const ADDONS=[
+  {id:"ami",cat:"truex",ce:"🤖",name:"TrueX Home Hub + เอมี่",price:119,truex:1,short:"สั่งงานบ้านด้วยเสียง",trig:["elderly","security","pet"]},
+  {id:"cctv1",cat:"truex",ce:"🎥",name:"CCTV ตัวที่ 1 + Cloud 7 วัน",price:99,truex:1,short:"ดูบ้านผ่านมือถือ",trig:["security","biz"]},
+  {id:"cctv1pet",cat:"truex",ce:"🐾",name:"CCTV ตัวที่ 1 + AI Pet Care",price:159,truex:1,short:"ดูแลสัตว์เลี้ยง 24 ชม.",trig:["pet"]},
+  {id:"cctv1ins",cat:"truex",ce:"🛡️",name:"CCTV ตัวที่ 1 + ประกันอัคคีภัย",price:179,truex:1,short:"กล้อง + ประกันบ้าน",trig:["security","elderly"]},
+  {id:"asiancombo",cat:"ent",ce:"🎬",name:"Asian Combo (VIU+iQIYI+TrueID+)",price:139,short:"ซีรีส์เอเชียครบ",trig:["stream","sports"]},
+  {id:"nowent",cat:"ent",ce:"📡",name:"NOW ENT",price:99,short:"ดูบอล + ช่องบันเทิง",trig:["sports","stream"]},
+  {id:"mesh",cat:"cov",ce:"🏵️",name:"Mesh WiFi เพิ่มจุด",price:100,short:"กระจายสัญญาณทั่วบ้าน (สูงสุด 4)",trig:["deadzone","multifloor","u_many"]},
+  {id:"sim20",cat:"sim",ce:"📱",name:"ซิมเน็ต 30GB + โทร 100 นาที",price:120,short:"เน็ตสำรองนอกบ้าน",trig:["sim","wfh","creator"]}
+];
+
+/* open/close scripts 3+3 per family */
+const SC={
+  value:{open:["พี่ใช้เน็ตหลัก ๆ ทำอะไรบ้างครับ ดูหนัง เล่นโซเชียล ทำงาน?","ตอนนี้จ่ายค่าเน็ตเดือนละเท่าไหร่ครับ เผื่อผมเทียบให้เห็นว่าคุ้มกว่าไหม","ถ้าเน็ตแรงพอ ๆ กันแต่ราคาถูกลง พี่สนใจไหมครับ"],
+    close:["ตัวนี้ 500/500 เพียง 499 บาท คุ้มสุดในงบ ช่วงนี้ฟรีค่าติดตั้งด้วยครับ","ล็อกคิววันนี้ผมจองช่างให้เลย ติดไวใช้ได้เร็ว","จ่ายเท่าค่ากาแฟวันละแก้ว ได้เน็ตทั้งเดือน ตกลงเลยไหมครับ"]},
+  speed:{open:["พี่ทำงานที่บ้าน อัปไฟล์ ประชุมออนไลน์บ่อยไหมครับ","เคยเจอไหมครับ ตอนอัปไฟล์/ไลฟ์แล้วช้าเพราะอัปโหลดน้อย","ถ้าได้อัปโหลดเต็ม 1Gbps เท่าดาวน์โหลด จะช่วยงานพี่ขนาดไหนครับ"],
+    close:["ตัวนี้ 1000/1000 เร็วเท่ากันขึ้น-ลง เพียง 759 บาท เหมาะกับงานพี่มากครับ","ประชุม อัปคลิป ไม่มีสะดุดแน่นอน","สมัครวันนี้ได้ฟรีค่าติดตั้ง ผมจัดให้เลยนะครับ"]},
+  proai:{open:["ที่บ้านมีคนใช้เน็ตพร้อมกันกี่คนครับ เล่นเกม ดูหนัง ทำงาน?","เคยเจอไหมครับ เวลาคนในบ้านโหลดหนักแล้วเกม/ประชุมกระตุก","ถ้ามีเราเตอร์ AI ที่จัดคิวให้เกม/ประชุมมาก่อน พี่สนใจไหมครับ"],
+    close:["ได้เราเตอร์ WiFi 7 AI ที่ซื้อเองหลักหมื่น แถมฟรีในแพ็ก คุ้มมากครับ","AI Fast Lane การันตีเกม/ประชุมไม่กระตุกแม้บ้านโหลดหนัก","เริ่ม 799 บาท พร้อม Mesh กระจายสัญญาณ ตกลงเลยไหมครับ"]},
+  fttr:{open:["บ้านพี่กี่ชั้นครับ เคยมีมุมไหนที่เน็ตไม่ค่อยถึงไหม","ห้องนอนชั้นบน/มุมบ้าน สัญญาณอ่อนบ่อยไหมครับ","ถ้าเน็ตแรงเท่ากันทุกห้องเลย พี่ว่าดีไหมครับ"],
+    close:["Fiber to Room เดินสายเข้าทุกห้อง 1Gbps เท่ากันทุกจุด หมดปัญหาจุดอับครับ","เลือกตามจำนวนห้องได้เลย มาพร้อม Mesh หลายจุด","ติดตั้งโดยช่างผู้เชี่ยวชาญ เดินสายสวยงาม จองคิววันนี้เลยไหมครับ"]},
+  ent:{open:["พี่ชอบดูซีรีส์แนวไหนครับ เกาหลี จีน ไทย?","ปกติดูผ่านแอปอะไรบ้างครับ จ่ายแยกหลายแอปไหม","ถ้ารวมคอนเทนต์ + เน็ตในบิลเดียว ถูกกว่า พี่สนใจไหมครับ"],
+    close:["ได้กล่อง TrueID + VIU + iQIYI ดูจบในแพ็กเดียว คุ้มกว่าสมัครแยกครับ","มี AI Fitness & Game ในกล่องให้เล่นทั้งบ้านด้วย","เริ่ม 600 บาท จ่ายบิลเดียวจบ ตกลงเลยไหมครับ"]},
+  netflix:{open:["พี่ดู Netflix อยู่แล้วใช่ไหมครับ จ่ายเองเดือนละเท่าไหร่","อยากดูกี่จอพร้อมกันครับ 4K ไหม","ถ้าพ่วง Netflix มากับเน็ต จ่ายบิลเดียว พี่สนใจไหมครับ"],
+    close:["ได้เน็ต + Netflix + TrueID+ + iQIYI รวมบิลเดียว แยกสมัครแพงกว่านี้ครับ","เลือกระดับ Basic/Standard/Premium ได้ตามที่พี่ดู","สมัครวันนี้ได้กล่อง TrueID Gen3 ด้วย ตกลงเลยไหมครับ"]},
+  combo:{open:["พี่ใช้ซิมมือถือค่ายไหนอยู่ครับ เน็ตมือถือพอใช้ไหม","อยากได้ทั้งเน็ตบ้านและซิมมือถือในที่เดียวไหมครับ","สนใจเบอร์มงคลเสริมดวงไหมครับ มีทั้งพลังดาว ฟันธง"],
+    close:["Combo Max ได้เน็ตบ้าน + ซิม 40-50GB + โทร + คูปอง 7-11 คุ้มสุดครับ","เลือกเบอร์มงคลได้ เหมือนได้ทั้งเน็ตแรงและสิริมงคลเข้าบ้าน","เริ่ม 699 บาท จบทั้งบ้านทั้งมือถือ ตกลงเลยไหมครับ"]},
+  safety:{open:["ที่บ้านมีผู้สูงอายุหรือเด็กอยู่ตอนกลางวันไหมครับ","เคยกังวลเรื่องความปลอดภัย/คนแปลกหน้าไหมครับ","อยากดูบ้านผ่านมือถือตอนไม่อยู่ไหมครับ"],
+    close:["ได้เน็ต + กล้อง + IoT + ประกันบ้าน ดูแลคนที่รักจากมือถือได้ทุกที่ครับ","กล้อง+ประกันซื้อแยกหลายพัน รวมในแพ็กเฉลี่ยเดือนละไม่กี่บาท","เริ่ม 579 บาท อุ่นใจทั้งบ้าน ตกลงเลยไหมครับ"]},
+  cctv:{open:["อยากได้กล้องที่วิดีโอคอลหาคนที่บ้านได้ด้วยไหมครับ","ที่บ้านมีผู้สูงอายุที่อยากคุยเห็นหน้าบ่อย ๆ ไหมครับ","กังวลเรื่องอัคคีภัย/ทรัพย์สินไหมครับ"],
+    close:["กล้องจอสัมผัสตัวนี้เป็นทั้งกล้องและวิดีโอคอล กดโทรปุ่มเดียวครับ","พร้อมประกันอัคคีภัยคุ้มครองบ้านสูงถึง 450,000 บาท","เพียง 650 บาท ได้ทั้งกล้อง วิดีโอคอล และประกัน ตกลงเลยไหมครับ"]},
+  dongle:{open:["แถวบ้านพี่เน็ตไฟเบอร์เคยล่มหรือไม่นิ่งบ้างไหมครับ","งานพี่เน็ตห้ามหลุดเลยใช่ไหมครับ","อยากมีเน็ตสำรองอัตโนมัติเวลาไฟเบอร์มีปัญหาไหมครับ"],
+    close:["เราเตอร์ 2 ระบบ ไฟเบอร์ + 4G สลับอัตโนมัติ เน็ตไม่มีสะดุดครับ","เหมาะพื้นที่ไฟเบอร์ยังไม่นิ่ง หรือคนที่พลาดไม่ได้","เริ่ม 599 บาท พร้อมประกันบ้าน ตกลงเลยไหมครับ"]}
+};
+const OBJECTIONS=[
+  {q:"“ขอคิดดูก่อน”",a:"เข้าใจครับ ไม่ต้องรีบ — แต่โปรฟรีค่าติดตั้งมีถึงสิ้นเดือน ผมจองคิวเผื่อไว้ก่อนได้ ไม่มีค่าใช้จ่าย"},
+  {q:"“แพงไป / งบไม่ถึง”",a:"งั้นผมมีตัวเบากว่าให้ดูครับ (กดย้อนไปดูโปรอื่น) หรือถ้าอยากได้ซิมด้วย Combo Max รวมเน็ตบ้าน+ซิมคุ้มกว่าซื้อแยก"},
+  {q:"“สัญญา 24 เดือนนานไป”",a:"มีบางแพ็กแบบ 12 เดือนครับ ราคาต่างนิดเดียว แต่ 24 เดือนได้ของแถม+ส่วนลดเยอะกว่า"}
+];
+
+/* ============ STATE ============ */
+const state={segment:null,selected:new Set(),notes:"",addons:new Set(),touched:false};
+const M={view:null,pkg:null,tab:"hl",seg:null,base:null,scoresMap:{}};
+
+function buildUI(){
+  const map={need:"sec-need",users:"sec-users",budget:"sec-budget",home:"sec-home"};
+  OPTIONS.forEach(o=>{
+    const host=document.getElementById(map[o.sec]);const el=document.createElement("div");
+    el.className="opt"+(o.grp?" radio":"");el.dataset.id=o.id;if(o.grp)el.dataset.grp=o.grp;
+    el.innerHTML=`<div class="tick"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>${o.e?`<span class="emoji">${o.e}</span>`:""}<span class="lbl">${o.l}</span>`;
+    el.onclick=()=>toggleOpt(o,el);host.appendChild(el);
+  });
+  document.querySelectorAll(".seg").forEach(sg=>sg.onclick=()=>setSegment(sg));
+  const qn=document.getElementById("quicknote");
+  QUICKNOTES.forEach(t=>{const b=document.createElement("button");b.textContent="+ "+t;b.onclick=()=>{const ta=document.getElementById("notes");ta.value=(ta.value?ta.value+" · ":"")+t;state.notes=ta.value;render();};qn.appendChild(b);});
+}
+function setSegment(sg){
+  document.querySelectorAll(".seg").forEach(x=>x.classList.remove("on"));sg.classList.add("on");
+  state.segment=sg.dataset.seg;
+  const special=state.segment&&state.segment!=="custom";
+  document.getElementById("custom-intake").style.display=special?"none":"block";
+  const note=document.getElementById("seg-note");
+  if(special){note.style.display="block";note.innerHTML=`⚡ <b>โปรกลุ่มนี้ทำมาเฉพาะ</b> — ดูสรุปโปร + Key Highlight + สคริปต์ที่เด้งขึ้นมา (หรือดูซ้ำทางขวา →)`;openSeg(state.segment);}
+  else{note.style.display="none";closeModal();}
+  render();
+}
+function toggleOpt(o,el){
+  if(o.grp){document.querySelectorAll(`.opt[data-grp="${o.grp}"]`).forEach(x=>{if(x!==el){x.classList.remove("on");state.selected.delete(x.dataset.id);}});
+    if(el.classList.contains("on")){el.classList.remove("on");state.selected.delete(o.id);}else{el.classList.add("on");state.selected.add(o.id);}}
+  else{el.classList.toggle("on");if(el.classList.contains("on"))state.selected.add(o.id);else state.selected.delete(o.id);}
+  state.touched=false;render();
+}
+document.addEventListener("input",e=>{if(e.target.id==="notes"){state.notes=e.target.value;render();}});
+
+function optById(id){return OPTIONS.find(o=>o.id===id);}
+function budgetBand(){const b=[...state.selected].map(optById).find(o=>o&&o.grp==="budget");return b?b.band:null;}
+function fmt(n){return n.toLocaleString("en-US");}
+
+function computeScores(){
+  const raw={},reasons={};Object.keys(PACKAGES).forEach(k=>{raw[k]=0;reasons[k]=[];});
+  OPTIONS.forEach(o=>{if(state.selected.has(o.id)){Object.entries(o.p).forEach(([pk,v])=>{if(raw[pk]===undefined)return;raw[pk]+=v;if(o.r)reasons[pk].push({v,r:o.r});});}});
+  const band=budgetBand();const max=Math.max(...Object.values(raw),1);
+  let arr=Object.entries(raw).map(([id,s])=>{
+    const p=PACKAGES[id];const inB=band?(p.price>=band[0]&&p.price<=band[1]):false;
+    return{id,score:s,inB,pct:s<=0?0:Math.round(42+(s/max)*57),reasons:reasons[id].sort((a,b)=>b.v-a.v)};
+  }).filter(x=>x.score>0);
+  arr.sort((a,b)=>(b.score-a.score)||(b.inB-a.inB));
+  return arr.slice(0,6);
+}
+function suggestedAddons(){const sel=state.selected;const out=new Set();ADDONS.forEach(a=>{if(a.trig.some(t=>sel.has(t)))out.add(a.id);});return out;}
+
+/* ============ RENDER PANEL ============ */
+function render(){
+  const special=state.segment&&state.segment!=="custom";
+  const custom=state.segment==="custom";
+  const scores=custom?computeScores():[];
+  const hasInput=special||custom;
+  document.getElementById("empty").style.display=hasInput?"none":"flex";
+  const res=document.getElementById("result");res.style.display=hasInput?"block":"none";
+  if(!hasInput)return;
+
+  if(special){
+    res.innerHTML=segRefHTML(state.segment)
+      +`<button class="cta-card" style="width:100%;border:none;cursor:pointer;margin-top:16px" onclick="openSeg('${state.segment}')"><span style="font-family:'Bai Jamjuree';font-weight:700;color:var(--accent)">↗ เปิดหน้าต่างโปรอีกครั้ง</span></button>`;
+    return;
+  }
+  // custom
+  if(scores.length===0){
+    res.innerHTML=`<div class="panel-empty" style="min-height:50vh"><div class="big">🧩</div><h4 class="display">ติ๊กความต้องการทางซ้าย</h4><p>เลือกอย่างน้อย 1 ข้อ แล้วปุ่ม “ดูโปรที่แนะนำ” จะขึ้นมาที่นี่</p></div>`;
+    return;
+  }
+  M.scoresMap={};scores.forEach(s=>M.scoresMap[s.id]=s);
+  res.innerHTML=`<div class="cta-card">
+    <div class="big2">🎯</div>
+    <h4 class="display">เจอ ${scores.length} โปรที่เหมาะกับลูกค้า</h4>
+    <p>เรียงจากตรงที่สุดลงมา · กดดูรายละเอียด สคริปต์ และไปต่อ upsell/สรุปยอดได้เลย</p>
+    <button onclick="openList()">ดูโปรที่แนะนำ ▶</button>
+  </div>
+  ${state.notes.trim()?`<div style="padding-top:6px"><h5 class="sec-h">📝 หมายเหตุ</h5><p style="font-size:13px;margin:0;background:var(--paper);padding:11px 13px;border-radius:10px;border:1px solid var(--border)">${escapeHtml(state.notes)}</p></div>`:""}`;
+}
+function segRefHTML(seg){
+  const S=SEGMENTS[seg];
+  const promos=S.promos.map(pr=>`<div class="cpack"><div class="cp-price">฿${pr.price}${pr.normal?`<small>ปกติ ฿${pr.normal}</small>`:""}</div><div class="cp-mid"><div class="cp-name">${pr.name}</div><div class="cp-spec">${pr.spec}</div></div><div class="cp-mkt">${pr.mkt}</div></div>`).join("");
+  return `<div class="seg-page"><div class="ch">${S.icon} ${S.title}</div><div class="cb">${promos}<div class="keyhl"><span class="kl">★ Key Highlight</span>${S.highlight}</div></div></div>`;
+}
+
+/* ============ MODAL WIZARD ============ */
+function showModal(){document.getElementById("modal").classList.add("show");}
+function closeModal(){document.getElementById("modal").classList.remove("show");}
+function openSeg(seg){M.seg=seg;M.view="seg";showModal();renderModal();}
+function openList(){M.seg=null;M.view="list";showModal();renderModal();}
+function openDetail(id){M.pkg=id;M.tab="hl";M.view="detail";renderModal();}
+function mTab(t){M.tab=t;renderModal();}
+function mBackList(){M.view="list";renderModal();}
+function mToCross(){
+  if(M.seg){const pr=SEGMENTS[M.seg].promos[0];M.base={name:pr.name,price:pr.price,normal:pr.normal,mkt:pr.mkt,desc:pr.spec};}
+  else{const p=PACKAGES[M.pkg];M.base={name:p.name,price:p.price,normal:p.normal,mkt:p.mkt,desc:p.desc};}
+  if(!state.touched)state.addons=new Set(suggestedAddons());
+  M.view="cross";renderModal();
+}
+function mToSummary(){M.view="summary";renderModal();}
+function mBack(v){M.view=v;renderModal();}
+function mToggleAddon(id){state.touched=true;if(state.addons.has(id))state.addons.delete(id);else state.addons.add(id);renderModal();}
+
+function head(backAttr,title,sub){
+  return `<div class="m-head">${backAttr?`<div class="back" onclick="${backAttr}">‹</div>`:""}<div class="ht">${title}${sub?`<small>${sub}</small>`:""}</div><div class="x" onclick="closeModal()">×</div></div>`;
+}
+function renderModal(){
+  const card=document.getElementById("modal-card");let h="";
+  if(M.view==="seg"){
+    const S=SEGMENTS[M.seg];
+    const promos=S.promos.map(pr=>`<div class="cpack"><div class="cp-price">฿${pr.price}${pr.normal?`<small>ปกติ ฿${pr.normal}</small>`:""}</div><div class="cp-mid"><div class="cp-name">${pr.name}</div><div class="cp-spec">${pr.spec}</div></div><div class="cp-mkt">${pr.mkt}</div></div>`).join("");
+    const hooks=S.hooks.map(x=>`<div class="hookbox"><span class="hh">🎣 ${x.label}</span><p>${x.text}</p></div>`).join("");
+    const docs=(S.docs&&S.docs.length)?`<div class="clab">📋 เอกสารที่ต้องเตรียม</div><ul class="docs">${S.docs.map(d=>`<li>📄 <span>${d}</span></li>`).join("")}</ul>`:"";
+    h=`${head("",S.icon+" "+S.title)}
+      <div class="m-body">${promos}
+        <div class="keyhl"><span class="kl">★ Key Highlight</span>${S.highlight}</div>
+        <div class="clab">🎣 ประโยคเปิดการขาย</div>${hooks}
+        <div class="clab">💬 ประโยคแนะนำโปร (กระชับ)</div><div class="cscript">${S.rec}</div>
+        ${docs}
+      </div>
+      <div class="m-foot"><button class="m-btn" onclick="closeModal()">ปิด</button><button class="m-btn primary" onclick="mToCross()">ไปต่อ — เสริม &amp; สรุป ▶</button></div>`;
+  }
+  else if(M.view==="list"){
+    const scores=computeScores();M.scoresMap={};scores.forEach(s=>M.scoresMap[s.id]=s);
+    const items=scores.map((x,i)=>{const p=PACKAGES[x.id];
+      return `<div class="mlist-item" onclick="openDetail('${x.id}')">
+        <div class="rk">#${i+1}</div>
+        <div class="mm"><div class="nm">${p.name}</div><div class="sp">⬇${p.down}/⬆${p.up} · ฿${fmt(p.price)}/ด. · <span class="cd">${p.mkt}</span>${x.inB?" · ในงบ":""}</div></div>
+        <div class="pct">${x.pct}%</div><div class="cv">›</div>
+      </div>`;}).join("");
+    h=`${head("","🎯 โปรที่แนะนำสำหรับลูกค้า","เรียงจากตรงที่สุด · กดเพื่อดูรายละเอียด")}
+      <div class="m-body"><div class="mlist-top">แตะโปรเพื่อดู Key Highlight · สคริปต์เปิด/ปิด · ตอบข้อโต้แย้ง แล้วไปต่อ upsell/สรุปยอด</div>${items}</div>
+      <div class="m-foot"><button class="m-btn" onclick="closeModal()">ปิด</button></div>`;
+  }
+  else if(M.view==="detail"){
+    const p=PACKAGES[M.pkg];const sc=M.scoresMap[M.pkg]||{reasons:[]};
+    const tabs=[["hl","ไฮไลต์ & เหตุผล"],["open","สคริปต์เปิด"],["close","สคริปต์ปิด"],["obj","ข้อโต้แย้ง"]]
+      .map(([k,l])=>`<button class="m-tab ${M.tab===k?'on':''}" onclick="mTab('${k}')">${l}</button>`).join("");
+    let content="";
+    if(M.tab==="hl"){
+      const reasons=(sc.reasons||[]).slice(0,4).map(r=>`<li><span class="chk">✓</span><span>${r.r}</span></li>`).join("")||`<li style="color:var(--muted-soft)">—</li>`;
+      content=`<div class="keyhl"><span class="kl">★ Key Highlight</span>${p.hl}</div>
+        <div class="clab">📦 รายละเอียดโปร</div>
+        <div style="font-size:12.5px;line-height:1.6;color:var(--ink)">ความเร็ว ⬇${p.down}/⬆${p.up} Mbps · ${p.desc} · สัญญา ${p.ct}</div>
+        <div class="clab">✅ ทำไมแพ็กนี้เหมาะกับลูกค้า</div><ul class="why">${reasons}</ul>`;
+    }else if(M.tab==="open"){
+      content=SC[p.fam].open.map((t,i)=>`<div class="script"><span class="q">เปิด ${i+1}</span><p>${t}</p></div>`).join("");
+    }else if(M.tab==="close"){
+      content=SC[p.fam].close.map((t,i)=>`<div class="script"><span class="q">ปิด ${i+1}</span><p>${t}</p></div>`).join("");
+    }else{
+      content=OBJECTIONS.map(o=>`<div class="objcard"><div class="oq">${o.q}</div><div class="oa">${o.a}</div></div>`).join("");
+    }
+    h=`${head("mBackList()",p.name,`฿${fmt(p.price)}/เดือน`)}
+      <div class="m-body">
+        <div class="dprice"><span class="b">฿${fmt(p.price)}</span><span class="u">/เดือน · สัญญา ${p.ct}</span><span class="cd">${p.mkt}</span></div>
+        <div class="m-tabs">${tabs}</div>${content}
+      </div>
+      <div class="m-foot"><button class="m-btn" onclick="mBackList()">◀ ดูโปรอื่น</button><button class="m-btn primary" onclick="mToCross()">เลือกโปรนี้ ไปต่อ ▶</button></div>`;
+  }
+  else if(M.view==="cross"){
+    const sugg=suggestedAddons();let total=M.base.price;
+    const rows=ADDONS.map(a=>{const on=state.addons.has(a.id);if(on)total+=a.price;const ai=sugg.has(a.id);
+      const tags=[];if(a.truex)tags.push(`<span class="tag-truex">True X</span>`);if(ai)tags.push(`<span class="tag-ai">AI แนะนำ</span>`);
+      return `<div class="xrow ${on?'on':''} ${ai&&!on?'sugg':''}" onclick="mToggleAddon('${a.id}')">
+        <div class="xtick"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span style="font-size:16px">${a.ce}</span>
+        <div class="xi"><div class="xn">${a.name} ${tags.join(" ")}</div><div class="xs2">${a.short}</div></div>
+        <div class="xp">+฿${a.price}</div></div>`;}).join("");
+    const backTo=M.seg?"mBack('seg')":"mBack('detail')";
+    h=`${head(backTo,"🧩 เพิ่มบริการเสริม (Upsell / Cross-sell)")}
+      <div class="m-body">
+        <div class="base-line"><div class="bn">${M.base.name}<small>MKT: ${M.base.mkt}</small></div><div class="bp">฿${fmt(M.base.price)}</div></div>
+        <div class="clab">แตะเพื่อพ่วง (ตัว AI แนะนำมีป้ายกำกับ)</div>${rows}
+        <div class="run-total"><div class="l">ยอดรวม/เดือน</div><div class="v">฿${fmt(total)}<small>/ด.</small></div></div>
+      </div>
+      <div class="m-foot"><button class="m-btn" onclick="${backTo}">◀ กลับ</button><button class="m-btn primary" onclick="mToSummary()">ดูสรุปข้อเสนอ ▶</button></div>`;
+  }
+  else if(M.view==="summary"){
+    const chosen=[...state.addons].map(id=>ADDONS.find(a=>a.id===id)).filter(Boolean);
+    const addTotal=chosen.reduce((s,a)=>s+a.price,0);const grand=M.base.price+addTotal;
+    const normal=M.base.normal||null;
+    const addRows=chosen.map(a=>`<div class="sum-row"><div class="sn">${a.ce} ${a.name}</div><div class="sp">฿${a.price}</div></div>`).join("");
+    const getList=[`เน็ตบ้าน: ${M.base.desc}`].concat(chosen.map(a=>a.name)).map(g=>`<li>✓ ${g}</li>`).join("");
+    const reasonNote=[...state.selected].map(id=>NEED_LABEL[id]).filter(Boolean).slice(0,5);
+    h=`${head("mBack('cross')","📋 สรุปข้อเสนอสำหรับลูกค้า")}
+      <div class="m-body">
+        <div class="sum-total"><div class="l">ยอดเสนอรวม<small>${M.base.name}${chosen.length?` + เสริม ${chosen.length} รายการ`:""}</small></div><div class="v">฿${fmt(grand)}<small style="font-size:14px">/ด.</small></div></div>
+        ${normal?`<div class="compare"><div class="cbox"><div class="cl">ราคาปกติ</div><div class="cv" style="color:var(--muted);text-decoration:line-through">฿${fmt(normal)}</div></div><div class="cbox now"><div class="cl">ราคาที่เสนอ</div><div class="cv">฿${fmt(M.base.price)}</div></div></div>`:""}
+        <div class="sum-sec">แพ็กหลัก</div>
+        <div class="sum-row"><div class="sn">${M.base.name}<span class="cd">${M.base.mkt}</span></div><div class="sp">฿${fmt(M.base.price)}</div></div>
+        ${chosen.length?`<div class="sum-sec">บริการเสริม</div>${addRows}`:""}
+        <div class="sum-sec">สิ่งที่ลูกค้าจะได้</div><ul class="why get" style="list-style:none;padding:0;margin:0">${getList}</ul>
+        ${reasonNote.length?`<div class="whybox"><b>ทำไมลูกค้าเลือกโปรนี้:</b> ตรงกับที่ลูกค้าบอกว่า «${reasonNote.join("», «")}» — ใช้ทวนตอนปิดการขายได้</div>`:""}
+      </div>
+      <div class="m-foot"><button class="m-btn" onclick="mBack('cross')">◀ กลับ</button><button class="m-btn ghost" onclick="closeModal();">เสร็จสิ้น ✓</button></div>`;
+  }
+  card.innerHTML=h;
+}
+
+function escapeHtml(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function resetAll(){state.segment=null;state.selected.clear();state.notes="";state.addons.clear();state.touched=false;
+  document.querySelectorAll(".opt.on,.seg.on").forEach(e=>e.classList.remove("on"));
+  document.getElementById("notes").value="";document.getElementById("custom-intake").style.display="block";document.getElementById("seg-note").style.display="none";
+  closeModal();render();}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
+buildUI();render();
+</script>
+</body>
+</html>
